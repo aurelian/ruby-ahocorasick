@@ -1,3 +1,4 @@
 strmat
 ruby-pytst
 aho-corasick
+http://latimes.rubyforge.org/keyword_prospector/rdoc/
