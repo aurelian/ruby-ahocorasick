@@ -1,0 +1,7 @@
+ac.o :
+	gcc -c -fPIC -shared ac.c
+libasick : ac.o
+	gcc -shared -Wl,-soname,libasick.so -o libasick.so.1.0.1
+	ar rcs libasick.a ac.o
+clean : 
+	rm -rf *.o *.a *.so* *.dylib*
