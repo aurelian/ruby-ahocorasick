@@ -6,7 +6,7 @@ k= AhoCorasick::KeywordTree.from_file "../__tbr/en.all"
 
 puts k.size
 
-results= k.search(File.read("gutenberg/melville-moby_dick.txt"))
+results= k.search(File.read("../__tbr/news.txt"))
 
 puts results.size
 
