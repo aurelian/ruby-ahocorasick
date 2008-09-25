@@ -8,5 +8,7 @@ puts k.size
 
 results= k.search(File.read("../__tbr/news.txt"))
 
-puts results.size
+results.each do | r |
+  puts r[:value]
+end
 

@@ -1,10 +1,4 @@
 
-//
-// TODO:
-//  * search should return an array of id's (and yield an id)
-//  * id in add_string should be required
-//
-
 #include <ruby.h>
 #include "ac.h"
 
@@ -49,6 +43,11 @@ rb_kwt_make(VALUE self) {
   return self;
 }
 
+//
+// TODO:
+//  * should return an array of id's (and yield an id)
+//  * should return only word matches (-1 / +1 = [space]
+//
 static VALUE
 rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   char * result;   // itermediate result
