@@ -39,6 +39,38 @@ rb_kwt_init(VALUE self) {
   return self;
 }
 
+static VALUE
+rb_kwt_new_from_file(VALUE obj, VALUE f_string) { 
+
+  struct kwt_struct_data *kwt_data;
+  VALUE self;
+  FILE *dictionary;
+
+  // self= rb_class_boot( obj );
+
+  self= rb_kwt_init(obj);
+
+  // printf("[internal]==> %s\n", RSTRING( self )->ptr);
+
+  KeywordTree( self, kwt_data );
+
+  printf( "[internal]==> %s\n", RSTRING( f_string )->ptr );
+
+  dictionary = fopen( RSTRING( f_string )->ptr, "r" );
+
+  if(dictionary == NULL) {
+    rb_raise(rb_eRuntimeError, "Cannot open `%s\". No such file?", RSTRING(f_string)->ptr);
+  }
+
+  // printf("[internal]==> %d\n", kwt_data->dictionary_size);
+
+  fclose(dictionary);
+
+  return Qnil;
+}
+
+
+
 static VALUE 
 rb_kwt_make(VALUE self) { 
   struct kwt_struct_data *kwt_data;
@@ -167,6 +199,8 @@ void Init_ahocorasick() {
   rb_define_method(rb_cKeywordTree, "add_string", rb_kwt_add_string, -1);
   rb_define_method(rb_cKeywordTree, "search", rb_kwt_search, -1);
   rb_define_alias(rb_cKeywordTree, "<<", "add_string");
+
+  rb_define_singleton_method(rb_cKeywordTree, "from_file", rb_kwt_new_from_file, 1);
 
   sym_length= ID2SYM(rb_intern("length"));
   sym_id= ID2SYM(rb_intern("id"));
