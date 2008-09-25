@@ -1,4 +1,16 @@
-strmat
-ruby-pytst
-aho-corasick
-http://latimes.rubyforge.org/keyword_prospector/rdoc/
+ * strmat
+ * ruby-pytst
+ * aho-corasick
+ * http://latimes.rubyforge.org/keyword_prospector/rdoc/
+ * libstree
+
+[aurelian@stalingrad ext]$ time ./dict.rb 
+110196
+711
+
+real    0m0.538s
+user    0m0.435s
+sys     0m0.036s
+
+--
+
