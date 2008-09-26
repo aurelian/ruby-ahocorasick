@@ -6,6 +6,7 @@ This library is a ruby extension, a wrapper around the AhoCorasick implementatio
  * http://latimes.rubyforge.org/keyword_prospector/rdoc/
  * libstree
 
+<pre>
 [aurelian@stalingrad ext]$ time ./dict.rb 
 110196
 711
@@ -13,6 +14,7 @@ This library is a ruby extension, a wrapper around the AhoCorasick implementatio
 real    0m0.538s
 user    0m0.435s
 sys     0m0.036s
+</pre>
 
 --
 
