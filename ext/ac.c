@@ -491,16 +491,17 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
   node->outlinks_traversed++;
 #endif
 
-/*    if (node->output != NULL) {
+    if (node->output != NULL) {
       id = node->output->matchid;
       if (id_out)
         *id_out = id;
       if (length_out)
         *length_out = node->Plengths[id];
-
       return &T[c] - node->Plengths[id];
+      
+      // &T[c] - node->Plengths[id];
     }
-*/
+
   }
 
   /*

@@ -185,6 +185,8 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) {
 static void
 rb_kwt_struct_free(struct kwt_struct_data * kwt_data)
 {
+  // printf("[internal]=> num compares: %d\n", kwt_data->tree->num_compares);
+  // printf("[internal]=> num failures: %d\n", kwt_data->tree->num_failures);
   ac_free(kwt_data->tree);
 }
 
