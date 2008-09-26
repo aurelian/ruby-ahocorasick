@@ -56,6 +56,7 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
   VALUE v_search;  // search string, function argument
+  int next;
   struct kwt_struct_data *kwt_data;
   
   // one mandatory argument.
@@ -75,19 +76,28 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   if(kwt_data->dictionary_size == 0) 
     return v_results;
   // prepare the search
-  ac_search_init(kwt_data->tree, RSTRING(v_search)->ptr, RSTRING(v_search)->len);
+  ac_search_init(kwt_data->tree, RSTRING( v_search )->ptr, RSTRING( v_search )->len);
   // loop trought the results
   while((remain= ac_search(kwt_data->tree, &lgt, &id)) != NULL) {
+    next= remain[lgt];
+    // '.' '?' ',' '\0' '!' ' ' ':' ';'   
+    if(! ( next == 46 || next == 63 || next == 44 || next == 34 || next == 59 || next == 58 || next == 33 || next == 32 || next == 0) )
+    {
+       // printf("[internal]==> next-char is: %d\n", next);
+       continue;
+    }
+    // if(remain[lgt] == 98) continue;
+    //   printf("[internal]==> '%c' '%s'\n", remain[lgt], remain);
     // this is an individual result as a hash
     v_result= rb_hash_new();
     // :id => int
-    rb_hash_aset(v_result, sym_id, INT2FIX(id));
+    rb_hash_aset( v_result, sym_id, INT2FIX(id) );
     // :length => int
-    rb_hash_aset(v_result, sym_length, INT2FIX(lgt));
+    rb_hash_aset( v_result, sym_length, INT2FIX(lgt) );
     // :value => str
     result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
-    rb_hash_aset(v_result, sym_value, rb_str_new(result, lgt));
+    rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
     // yield this hash
     if(rb_block_given_p())
       rb_yield(v_result);

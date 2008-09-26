@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'ahocorasick.bundle'
+require 'ahocorasick.so'
 
 k= AhoCorasick::KeywordTree.from_file "../__tbr/en.all"
 

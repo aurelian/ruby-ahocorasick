@@ -1,0 +1,5 @@
+*.swp
+*.so
+*.o
+*.bundle
+ext/Makefile

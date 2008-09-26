@@ -486,11 +486,12 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
    */
   if (node->output != NULL) {
     node->output = node->output->outlink;
+
 #ifdef STATS
-    node->outlinks_traversed++;
+  node->outlinks_traversed++;
 #endif
 
-    if (node->output != NULL) {
+/*    if (node->output != NULL) {
       id = node->output->matchid;
       if (id_out)
         *id_out = id;
@@ -499,6 +500,7 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
 
       return &T[c] - node->Plengths[id];
     }
+*/
   }
 
   /*
@@ -531,6 +533,7 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
 #ifdef STATS
         node->num_failures++;
 #endif
+
       }
     }
     else {

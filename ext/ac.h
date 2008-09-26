@@ -9,7 +9,6 @@ typedef struct actreenode {
   struct actreenode *children, *sibling;
 } ACTREE_NODE, *AC_TREE;
 
-
 typedef struct {
   AC_TREE tree;
   int ispreprocessed, errorflag;
@@ -26,10 +25,9 @@ typedef struct {
 #endif
 } AC_STRUCT;
 
-
 AC_STRUCT *ac_alloc(void);
 int ac_add_string(AC_STRUCT *node, char *P, int M, int id);
-int ac_del_string(AC_STRUCT *node, char *P, int M, int id);
+// int ac_del_string(AC_STRUCT *node, char *P, int M, int id);
 int ac_prep(AC_STRUCT *node);
 void ac_search_init(AC_STRUCT *node, char *T, int N);
 char *ac_search(AC_STRUCT *node, int *length_out, int *id_out);

@@ -1,5 +1,28 @@
 module AhoCorasick
 
+  class Dictionary
+
+    # loads a dictionary from a file,
+    # each line is a dictionary entry
+    # returns self
+    def self.from_file( file )
+
+    end
+
+    # 
+    def self.from_memcache( memcache_details )
+    end
+
+    # 
+    def self.from_mysql( mysql_details )
+    end
+
+    # returns the size of this dictionary
+    def size
+    end
+
+  end
+
   class SearchResult
     
     attr_reader :id, :length, :value
@@ -18,27 +41,12 @@ module AhoCorasick
 
   class KeywordTree
 
-    # loads a dictionary from a file,
-    # each line is a dictionary entry
-    # returns self
-    def self.new_from_file( file )
-    end
-
-    # TODO:
-    def self.new_from_memcache( memcache_details )
-    end
-
-    # TODO:
-    def self.new_from_mysql( mysql_details )
-
-    end
-
-    def initialize
+    def initialize(dictionary= nil)
     end
 
     # adds a string to dictionary
     # on a nil id, the system will generate one
-    def add_string(string, id)
+    def add_string(string, id= nil)
     end
     
     # removes a string from dictionary
@@ -68,14 +76,21 @@ module AhoCorasick
     #   puts result.length
     # end
     #
-    def find_all(str) yield result
-      prepare_search
-      yield search(str) if block_given?
+    def search(str) yield result
+      __prepare_search
+      results= []
+      result = __do_search(str)
+      yield result if block_given?
+      results
     end
 
-    protected
+    private
       # initialize the search
-      def prepare_search
+      def __prepare_search
+      end
+
+      # do the search
+      def __do_search str
       end
 
   end
