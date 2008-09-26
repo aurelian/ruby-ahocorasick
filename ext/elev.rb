@@ -2,17 +2,18 @@
 
 $kcode='UTF-8'
 
-require 'ahocorasick.so'
+require './ahocorasick'
 
-k= AhoCorasick::KeywordTree.from_file "../__tbr/en.all"
+k= AhoCorasick::KeywordTree.new
 
-#k << "data"
-#k << "base"
-#k << "database"
+k << "I've"
+k << "data"
+k << "base"
+k << "database"
 
-k.search "I've moved my data to a database" do | r |
-  puts r[:value] + "-> " + r[:length].to_s
+query= "I've moved my data to a database"
+
+k.search query do | r |
+  puts "-> [ " + r[:id].to_s + " ] " + r[:value] + " / " + query[r[:starts_at]].chr + ".." + query[r[:ends_at]].chr
 end
-
-
 

@@ -30,7 +30,7 @@ int ac_add_string(AC_STRUCT *node, char *P, int M, int id);
 // int ac_del_string(AC_STRUCT *node, char *P, int M, int id);
 int ac_prep(AC_STRUCT *node);
 void ac_search_init(AC_STRUCT *node, char *T, int N);
-char *ac_search(AC_STRUCT *node, int *length_out, int *id_out);
+char *ac_search(AC_STRUCT *node, int *length_out, int *id_out, int *ends_at);
 void ac_free(AC_STRUCT *node);
 
 #endif

@@ -2,7 +2,7 @@
 #include <ruby.h>
 #include "ac.h"
 
-static VALUE sym_length, sym_id, sym_value;
+static VALUE sym_id, sym_value, sym_ends_at, sym_starts_at;
 
 VALUE rb_mAhoCorasick;
 VALUE rb_cKeywordTree;
@@ -44,19 +44,17 @@ rb_kwt_make(VALUE self) {
 }
 
 //
-// TODO:
-//  * should return an array of id's (and yield an id)
-//  * should return only word matches (-1 / +1 = [space]
+// [{ :id => x, :value => y, :starts_at, :ends_at], [.... }
 //
 static VALUE
 rb_kwt_search(int argc, VALUE *argv, VALUE self) {
-  char * result;   // itermediate result
-  char * remain;   // returned by ac_search, the remaing text to search
-  int lgt, id;     // filled in by ac_search, the id and length of result
+  char * result;        // itermediate result
+  char * remain;        // returned by ac_search, the remaing text to search
+  int lgt, id, ends_at; // filled in by ac_search, the id and length of result
+  int starts_at;
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
   VALUE v_search;  // search string, function argument
-  int next;
   struct kwt_struct_data *kwt_data;
   
   // one mandatory argument.
@@ -78,35 +76,27 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   // prepare the search
   ac_search_init(kwt_data->tree, RSTRING( v_search )->ptr, RSTRING( v_search )->len);
   // loop trought the results
-  while((remain= ac_search(kwt_data->tree, &lgt, &id)) != NULL) {
-    next= remain[lgt];
-    // '.' '?' ',' '\0' '!' ' ' ':' ';'   
-    if(! ( next == 46 || next == 63 || next == 44 || next == 34 || next == 59 || next == 58 || next == 33 || next == 32 || next == 0) )
-    {
-       // printf("[internal]==> next-char is: %d\n", next);
-       continue;
-    }
-    // if(remain[lgt] == 98) continue;
-    //   printf("[internal]==> '%c' '%s'\n", remain[lgt], remain);
+  while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
     // this is an individual result as a hash
     v_result= rb_hash_new();
-    // :id => int
+    
     rb_hash_aset( v_result, sym_id, INT2FIX(id) );
-    // :length => int
-    rb_hash_aset( v_result, sym_length, INT2FIX(lgt) );
-    // :value => str
+    rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
+    rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 2 ) );
     result = (char*) malloc (sizeof(char)*lgt);
+
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
+
     // yield this hash
     if(rb_block_given_p())
       rb_yield(v_result);
+
     // store in the results array
     rb_ary_push( v_results, v_result );
-    // reduce memory?
     free(result);
   }
-  // return the results
+  // return all the results
   return v_results;
 }
 
@@ -185,8 +175,6 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) {
 static void
 rb_kwt_struct_free(struct kwt_struct_data * kwt_data)
 {
-  // printf("[internal]=> num compares: %d\n", kwt_data->tree->num_compares);
-  // printf("[internal]=> num failures: %d\n", kwt_data->tree->num_failures);
   ac_free(kwt_data->tree);
 }
 
@@ -211,12 +199,12 @@ void Init_ahocorasick() {
   rb_define_method(rb_cKeywordTree, "add_string", rb_kwt_add_string, -1);
   rb_define_method(rb_cKeywordTree, "search", rb_kwt_search, -1);
   rb_define_alias(rb_cKeywordTree, "<<", "add_string");
-
   rb_define_singleton_method(rb_cKeywordTree, "from_file", rb_kwt_new_from_file, -1);
 
-  sym_length= ID2SYM(rb_intern("length"));
   sym_id= ID2SYM(rb_intern("id"));
   sym_value= ID2SYM(rb_intern("value"));
+  sym_ends_at= ID2SYM( rb_intern("ends_at") );
+  sym_starts_at= ID2SYM( rb_intern("starts_at") );
 
 }
 

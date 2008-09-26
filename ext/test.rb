@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-require 'ahocorasick.bundle'
+
+require './ahocorasick'
 
 k= AhoCorasick::KeywordTree.new
 

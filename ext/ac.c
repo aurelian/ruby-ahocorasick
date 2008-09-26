@@ -447,12 +447,13 @@ void ac_search_init(AC_STRUCT *node, char *T, int N)
  *              length_out     -  where to store the new match's length
  *              id_out         -  where to store the identifier of the
  *                                pattern that matched
+ *              ends_at        -  where to store the n-th matched char                  
  *
  * Returns:  the left end of the text that matches a pattern, or NULL
  *           if no match occurs.  (It also stores values in `*length_out',
  *           and `*id_out' giving the match's length and pattern identifier.
  */
-char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
+char *ac_search(AC_STRUCT *node, int *length_out, int *id_out, int *ends_at)
 {
   int c, N, id;
   char *T;
@@ -497,9 +498,9 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
         *id_out = id;
       if (length_out)
         *length_out = node->Plengths[id];
+      if (ends_at)
+        *ends_at= c;
       return &T[c] - node->Plengths[id];
-      
-      // &T[c] - node->Plengths[id];
     }
 
   }
@@ -509,6 +510,7 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
    * match to one of the patterns occurs.
    */
   while (c <= N) {
+    // printf("[internal: %d]==> %d\n", N, c);
     /*
      * Try to match the next input character to a child in the tree.
      */
@@ -566,6 +568,8 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out)
           *id_out = id;
         if (length_out)
           *length_out = node->Plengths[id];
+        if(ends_at)
+          *ends_at= c;
 
         node->w = w;
         node->c = c;
