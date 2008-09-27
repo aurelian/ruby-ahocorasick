@@ -1,4 +1,10 @@
 
+//
+// (c) 2008, Aurelian Oancea < aurelian at locknet . ro >
+//
+// Released under MIT-LICENSE
+//
+
 #include <ruby.h>
 #include "ac.h"
 
@@ -83,8 +89,8 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     rb_hash_aset( v_result, sym_id, INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
     rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 2 ) );
-    result = (char*) malloc (sizeof(char)*lgt);
 
+    result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
 
