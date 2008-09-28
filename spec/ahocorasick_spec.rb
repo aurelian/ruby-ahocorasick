@@ -29,13 +29,48 @@ describe KeywordTree do
       @kwt.search("foo")[0].class.should == Hash
     end
 
-    it "the hash should have the symbols" do
+    it "each hash should have the required symbols values" do
       @kwt << "bar" << "foo"
       @kwt.search("foo") do | r |
         r[:id].class.should == Fixnum
         r[:starts_at].class.should == Fixnum
         r[:ends_at].class.should == Fixnum
         r[:value].should == "foo"
+      end
+    end
+
+    it "should match position" do
+      #        0123
+      #        |  |
+      @kwt << "data"
+      q= "data moved"
+      @kwt.search(q) do | result |
+        result[:starts_at].should == 0
+        result[:ends_at].should   == 3
+      end
+    end
+
+    it "should match position with unicode" do
+      #        012345689
+      #        |       |
+      @kwt << "bucurești"
+      #   01234567890123456789023
+      #                 |       |
+      q= "data moved to bucurești"
+      @kwt.search(q) do | result |
+        result[:starts_at].should == 14
+        result[:ends_at].should == 23
+      end
+    end
+
+    it "more unicode" do
+      @kwt << "expected"
+      #    012345678901234578901234567890
+      q = "moved to bucurești as expected"
+      @kwt.search(q) do | r |
+        r[:starts_at].should == 23
+        r[:ends_at].should   == q.size - 1
+        (r[:ends_at]-r[:starts_at]).should == "expected".size - 1
       end
     end
 

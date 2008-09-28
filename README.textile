@@ -4,6 +4,8 @@ This library is a ruby extension, a wrapper around the "Aho-Corasick":http://en.
 
 The source code (ac.c and ac.h) was "adapted" from Strmat. In fact, I've changed only 3-4 lines of code from the original implementation so it will feat my needs: search needed to return the current position in the searched string.
 
+h3. What's the idea?
+
 
 
 <pre>

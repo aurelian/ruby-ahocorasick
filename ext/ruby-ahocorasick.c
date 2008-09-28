@@ -5,6 +5,12 @@
 // Released under MIT-LICENSE
 //
 
+//
+// TODO: new methods
+//  * kwt[id] = word
+//  * kwt.from_file (class instance method)
+//
+
 #include <ruby.h>
 #include "ac.h"
 
@@ -56,7 +62,7 @@ static VALUE
 rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   char * result;        // itermediate result
   char * remain;        // returned by ac_search, the remaing text to search
-  int lgt, id, ends_at; // filled in by ac_search, the id and length of result
+  int lgt, id, ends_at; // filled in by ac_search, the id, length ane ends_at position
   int starts_at;
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
