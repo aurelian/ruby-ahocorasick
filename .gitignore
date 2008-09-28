@@ -3,3 +3,5 @@
 *.o
 *.bundle
 ext/Makefile
+spec/data/en.words
+spec/data/melville-moby_dick.txt

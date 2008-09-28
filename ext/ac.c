@@ -510,7 +510,6 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out, int *ends_at)
    * match to one of the patterns occurs.
    */
   while (c <= N) {
-    // printf("[internal: %d]==> %d\n", N, c);
     /*
      * Try to match the next input character to a child in the tree.
      */

@@ -9,7 +9,25 @@ describe KeywordTree do
       KeywordTree.new.class.should == KeywordTree
     end
     it "should create a new KeywordTree" do
-      KeywordTree.from_file("data/dict0.txt").class.should == KeywordTree
+      KeywordTree.from_file( File.dirname(__FILE__) + "/data/dict0.txt").class.should == KeywordTree
+    end
+  end
+
+  describe "Loading from a file" do
+    it "should be fast to load a bunch of english words" do
+      start= Time.now
+      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
+      puts "\n%d words loaded in %s seconds" % [k.size, (Time.now - start)]
+      (Time.now-start).should < 0.2
+    end
+
+    it "should be fast to find" do
+      start= Time.now
+      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
+      load_time= Time.now
+      results= k.search( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
+      puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
+      (Time.now-load_time).should < 1.2
     end
   end
 
@@ -121,13 +139,13 @@ describe KeywordTree do
     end
 
     it "should add strings from file and manually" do
-      kwt= KeywordTree.from_file "data/dict0.txt"
+      kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
       kwt << "foo"
       kwt.size.should == 4
     end
 
     it "should raise an error when adding new strings after the tree is frozen" do
-      kwt= KeywordTree.from_file "data/dict0.txt"
+      kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
       kwt.make
       lambda{kwt << "foo"}.should raise_error(RuntimeError)
     end
