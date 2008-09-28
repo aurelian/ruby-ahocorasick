@@ -39,7 +39,7 @@ rb_kwt_init(VALUE self) {
   tree     = ac_alloc();
   DATA_PTR(self) = kwt_data;
   kwt_data->tree            = tree;
-  kwt_data->last_id         = 0;
+  kwt_data->last_id         = 1;
   kwt_data->dictionary_size = 0;
   kwt_data->is_frozen       = 0;
   return self;
@@ -127,29 +127,33 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self) {
   char * string;
   int id;
 
-  if( rb_scan_args(argc, argv, "11", &v_string, &v_id) ) {
-    KeywordTree(self, kwt_data);
-    Check_Type(v_string, T_STRING);
-    string= RSTRING(v_string)->ptr;
-    if(v_id == Qnil) {
-      id = kwt_data->last_id + 1;
-    } else if(TYPE(v_id) != T_FIXNUM) {
-      rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%s\" given.", RSTRING(v_id)->ptr);
-    } else if(NUM2INT(v_id) <= 0) {
-      rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%d\" given.", NUM2INT(v_id));
-    } else {
-      id= NUM2INT(v_id);
-    }
-    if(kwt_data->is_frozen == 1)
-      rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
-    kwt_data->last_id= id + 1;
-  }
+  rb_scan_args(argc, argv, "11", &v_string, &v_id);
+ 
+  Check_Type(v_string, T_STRING);
+  string= RSTRING(v_string)->ptr;
 
+  KeywordTree(self, kwt_data);
+
+  if(kwt_data->is_frozen == 1)
+    rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
+
+  if(v_id == Qnil) {
+    id = kwt_data->last_id;
+  } else if(TYPE(v_id) != T_FIXNUM) {
+    rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%s\" given.", RSTRING(v_id)->ptr);
+  } else if(NUM2INT(v_id) <= 0) {
+    rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%d\" given.", NUM2INT(v_id));
+  } else {
+    id= NUM2INT(v_id);
+  }
+  
   if( ac_add_string(kwt_data->tree, string, strlen(string), id) == 0 ) {
     rb_raise(rb_eRuntimeError, "Failed to add `%s\", duplicate id `%d\"?", string, id);
   }
 
+  kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
+  // printf("[internal]==> adding %s as %d, next: %d\n", string, id, kwt_data->last_id);
   return self;
 }
 

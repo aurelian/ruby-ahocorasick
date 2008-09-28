@@ -13,24 +13,6 @@ describe KeywordTree do
     end
   end
 
-  describe "Loading from a file" do
-    it "should be fast to load a bunch of english words" do
-      start= Time.now
-      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
-      puts "\n%d words loaded in %s seconds" % [k.size, (Time.now - start)]
-      (Time.now-start).should < 0.2
-    end
-
-    it "should be fast to find" do
-      start= Time.now
-      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
-      load_time= Time.now
-      results= k.search( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
-      puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
-      (Time.now-load_time).should < 1.2
-    end
-  end
-
   describe "How to search" do
 
     before(:each) do
@@ -103,6 +85,24 @@ describe KeywordTree do
 
   end
 
+  describe "Context Match vs. Exact Word Match" do
+
+    before(:each) do 
+      # data, base, database
+      @kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
+    end
+
+    it "should match on context" do
+      q= "I've moved the data to a new database"
+      @kwt.search(q) do | r |
+        puts r[:value] + " / " + r[:id].to_s
+      end
+      #results= @kwt.search(q)
+      #results.size.should == 4
+    end
+
+  end
+
   describe "How to add strings" do
     it "should add 2 strings" do
       kwt= KeywordTree.new
@@ -151,5 +151,25 @@ describe KeywordTree do
     end
 
   end
+
+  describe "Benchmarks. Loading from a file" do
+
+    it "should be fast to load a bunch of english words" do
+      start= Time.now
+      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
+      puts "\n%d words loaded in %s seconds" % [k.size, (Time.now - start)]
+      (Time.now-start).should < 0.2
+    end
+
+    it "should be fast to find" do
+      start= Time.now
+      k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
+      load_time= Time.now
+      results= k.search( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
+      puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
+      (Time.now-load_time).should < 1.2
+    end
+  end
+
 
 end
