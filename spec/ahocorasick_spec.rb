@@ -9,7 +9,7 @@ describe KeywordTree do
       KeywordTree.new.class.should == KeywordTree
     end
     it "should create a new KeywordTree" do
-      KeywordTree.from_file("__tbr/dict0.txt").class.should == KeywordTree
+      KeywordTree.from_file("data/dict0.txt").class.should == KeywordTree
     end
   end
 
@@ -121,13 +121,13 @@ describe KeywordTree do
     end
 
     it "should add strings from file and manually" do
-      kwt= KeywordTree.from_file "__tbr/dict0.txt"
+      kwt= KeywordTree.from_file "data/dict0.txt"
       kwt << "foo"
       kwt.size.should == 4
     end
 
     it "should raise an error when adding new strings after the tree is frozen" do
-      kwt= KeywordTree.from_file "__tbr/dict0.txt"
+      kwt= KeywordTree.from_file "data/dict0.txt"
       kwt.make
       lambda{kwt << "foo"}.should raise_error(RuntimeError)
     end
