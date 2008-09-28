@@ -13,6 +13,34 @@ describe KeywordTree do
     end
   end
 
+  describe "How to search" do
+
+    before(:each) do
+      @kwt= KeywordTree.new
+    end
+
+    it "should return an array" do
+      @kwt << "foo"
+      @kwt.search("bar").class.should == Array
+    end
+
+    it "the array should contain hashes" do
+      @kwt << "bar" << "foo"
+      @kwt.search("foo")[0].class.should == Hash
+    end
+
+    it "the hash should have the symbols" do
+      @kwt << "bar" << "foo"
+      @kwt.search("foo") do | r |
+        r[:id].class.should == Fixnum
+        r[:starts_at].class.should == Fixnum
+        r[:ends_at].class.should == Fixnum
+        r[:value].should == "foo"
+      end
+    end
+
+  end
+
   describe "How to add strings" do
     it "should add 2 strings" do
       kwt= KeywordTree.new

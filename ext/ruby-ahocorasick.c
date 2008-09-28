@@ -125,18 +125,17 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self) {
     KeywordTree(self, kwt_data);
     Check_Type(v_string, T_STRING);
     string= RSTRING(v_string)->ptr;
-    if(kwt_data->is_frozen == 1) {
-      rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
-    }
     if(v_id == Qnil) {
       id = kwt_data->last_id + 1;
     } else if(TYPE(v_id) != T_FIXNUM) {
-      rb_raise(rb_eRuntimeError, "Please use a signed 32 bit integer as id, or leave nil to auto-generate one. `%s\" given.", RSTRING(v_id)->ptr);
+      rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%s\" given.", RSTRING(v_id)->ptr);
     } else if(NUM2INT(v_id) <= 0) {
-      rb_raise(rb_eRuntimeError, "Please use a signed 32 bit integer as id, or leave nil to auto-generate one. `%d\" given.", NUM2INT(v_id));
+      rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%d\" given.", NUM2INT(v_id));
     } else {
       id= NUM2INT(v_id);
     }
+    if(kwt_data->is_frozen == 1)
+      rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
     kwt_data->last_id= id + 1;
   }
 
