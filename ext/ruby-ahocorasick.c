@@ -125,6 +125,9 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self) {
     KeywordTree(self, kwt_data);
     Check_Type(v_string, T_STRING);
     string= RSTRING(v_string)->ptr;
+    if(kwt_data->is_frozen == 1) {
+      rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
+    }
     if(v_id == Qnil) {
       id = kwt_data->last_id + 1;
     } else if(TYPE(v_id) != T_FIXNUM) {
@@ -173,7 +176,7 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) {
     ac_add_string(kwt_data->tree, word, strlen(word)-1, id++);
     kwt_data->dictionary_size++;
   }
-
+  kwt_data->last_id= id+1;
   fclose(dictionary);
   return self;
 }

@@ -5,26 +5,21 @@ include AhoCorasick
 describe KeywordTree do
 
   describe "How to create a new KeywordTree" do
-
     it "should create a new KeywordTree" do
-      KeywordTree.new.class.should == AhoCorasick::KeywordTree
+      KeywordTree.new.class.should == KeywordTree
     end
-
     it "should create a new KeywordTree" do
-      KeywordTree.from_file("__tbr/dict0.txt").class.should == AhoCorasick::KeywordTree
+      KeywordTree.from_file("__tbr/dict0.txt").class.should == KeywordTree
     end
-
   end
 
   describe "How to add strings" do
-
     it "should add 2 strings" do
       kwt= KeywordTree.new
       kwt.add_string "foo"
       kwt << "bar"
       kwt.size.should == 2
     end
-
     it "should add 2 strings with id" do
       kwt= KeywordTree.new
       kwt.add_string "foo", 1
@@ -50,6 +45,19 @@ describe KeywordTree do
       kwt << "baz"
       kwt.add_string "foo", 1990
       kwt << "bar"
+      kwt.size.should == 3
+    end
+
+    it "should add strings from file and manually" do
+      kwt= KeywordTree.from_file "__tbr/dict0.txt"
+      kwt << "foo"
+      kwt.size.should == 4
+    end
+
+    it "should raise an error when adding new strings after the tree is frozen" do
+      kwt= KeywordTree.from_file "__tbr/dict0.txt"
+      kwt.make
+      lambda{kwt << "foo"}.should raise_error(RuntimeError)
     end
 
   end
