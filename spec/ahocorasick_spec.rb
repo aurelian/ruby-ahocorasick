@@ -46,7 +46,7 @@ describe KeywordTree do
       q= "data moved"
       @kwt.search(q) do | result |
         result[:starts_at].should == 0
-        result[:ends_at].should   == 3
+        result[:ends_at].should   == 4
       end
     end
 
@@ -59,7 +59,7 @@ describe KeywordTree do
       q= "data moved to bucurești"
       @kwt.search(q) do | result |
         result[:starts_at].should == 14
-        result[:ends_at].should == 23
+        result[:ends_at].should   == 24
       end
     end
 
@@ -69,9 +69,18 @@ describe KeywordTree do
       q = "moved to bucurești as expected"
       @kwt.search(q) do | r |
         r[:starts_at].should == 23
-        r[:ends_at].should   == q.size - 1
-        (r[:ends_at]-r[:starts_at]).should == "expected".size - 1
+        r[:ends_at].should   == q.size
+        (r[:ends_at]-r[:starts_at]).should == r[:value].size
       end
+    end
+
+    it "checks for result length" do
+      @kwt << "foo"
+      result= @kwt.search("foo").first
+      #          4                 0
+      (result[:ends_at]-result[:starts_at]).should == result[:value].size
+      "foo"[result[:ends_at]].should == nil
+      "foo"[result[:ends_at]-1].chr.should == "o"
     end
 
   end

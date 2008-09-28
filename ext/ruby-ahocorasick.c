@@ -62,7 +62,7 @@ static VALUE
 rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   char * result;        // itermediate result
   char * remain;        // returned by ac_search, the remaing text to search
-  int lgt, id, ends_at; // filled in by ac_search, the id, length ane ends_at position
+  int lgt, id, ends_at; // filled in by ac_search, the id, length and ends_at position
   int starts_at;
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
@@ -94,7 +94,7 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     
     rb_hash_aset( v_result, sym_id, INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
-    rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 2 ) );
+    rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 1 ) );
 
     result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
