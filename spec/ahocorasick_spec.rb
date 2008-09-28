@@ -93,12 +93,7 @@ describe KeywordTree do
     end
 
     it "should match on context" do
-      q= "I've moved the data to a new database"
-      @kwt.search(q) do | r |
-        puts r[:value] + " / " + r[:id].to_s
-      end
-      #results= @kwt.search(q)
-      #results.size.should == 4
+      @kwt.search("I've moved the data to a new database").size.should == 4
     end
 
   end
@@ -141,7 +136,7 @@ describe KeywordTree do
     it "should add strings from file and manually" do
       kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
       kwt << "foo"
-      kwt.size.should == 4
+      kwt.size.should == File.readlines( File.dirname(__FILE__) + "/data/dict0.txt" ).size + 1
     end
 
     it "should raise an error when adding new strings after the tree is frozen" do

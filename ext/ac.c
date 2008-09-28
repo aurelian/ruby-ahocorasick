@@ -559,6 +559,7 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out, int *ends_at)
 #ifdef STATS
         node->outlinks_traversed++;
 #endif
+
       }
 
       if (node->output != NULL) {
@@ -566,12 +567,12 @@ char *ac_search(AC_STRUCT *node, int *length_out, int *id_out, int *ends_at)
         if (id_out)
           *id_out = id;
         if (length_out)
-          *length_out = node->Plengths[id];
+          *length_out= node->Plengths[id];
         if(ends_at)
           *ends_at= c;
 
         node->w = w;
-        node->c = c;
+        node->c = c; // ends_at - length_out;
 
         return &T[c] - node->Plengths[id];
       }

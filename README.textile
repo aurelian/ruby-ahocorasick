@@ -8,6 +8,8 @@ h3. What's the idea?
 
 Having a dictionary of known sentences, how can I find individual patterns in an incoming stream of data? Fast.
 
+
+
 <pre>
 [aurelian@stalingrad ext]$ time ./dict.rb 
 110196
