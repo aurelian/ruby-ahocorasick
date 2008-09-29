@@ -137,30 +137,23 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   ac_search_init(kwt_data->tree, RSTRING( v_search )->ptr, RSTRING( v_search )->len);
   // loop trought the results
   while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
-    // printf("\n--\n[internal]==> %s\n--\n", kwt_data->tree->T);
     // this is an individual result as a hash
     v_result= rb_hash_new();
     rb_hash_aset( v_result, sym_id, INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
     rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 1 ) );
-
     result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
 
     // yield this hash or, add it to the results
-    if(rb_block_given_p()) {
+    if(rb_block_given_p())
       rb_yield(v_result);
-    } else {
+    else
       rb_ary_push( v_results, v_result );
-    }
-
     free(result);
   }
   
-  // printf("[internal]==> got %ld results\n", RARRAY(v_results)->len);
-
-  // return v_results;
   // return the results or nil if none
   if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
     return v_results;
