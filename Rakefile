@@ -40,8 +40,7 @@ spec = Gem::Specification.new do | s |
   s.extensions << "ext/extconf.rb"
   s.has_rdoc = true
   s.rdoc_options << '--title' <<  'Ruby-AhoCorasick' << 
-    '--exclude' << 'ext/ac.h' << '--exclude' << 'ext/extconf.rb' << '--exclude' << 'ext/ac.c' 
-    '--exclude' << 'spec/ahocorasick_spec.rb' << '--inline-source' << 'ext/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
+    '--inline-source' << 'ext/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
   s.author = "Aurelian Oancea"
   s.email = "aurelian@locknet.ro"
   s.homepage = "http://locknet.ro"

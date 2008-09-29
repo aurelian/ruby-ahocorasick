@@ -30,6 +30,15 @@ struct kwt_struct_data {
   int is_frozen;
 };
 
+/*
+ * call-seq: initialize
+ *
+ * Creates a new KeywordTree
+ *
+ *   require 'ahocorasick'
+ *   kwt = Ahocorasick::KeywordTree.new
+ *
+ */
 static VALUE 
 rb_kwt_init(VALUE self) { 
   AC_STRUCT * tree;
@@ -45,6 +54,22 @@ rb_kwt_init(VALUE self) {
   return self;
 }
 
+/*
+ * Document-method: make
+ * call-seq: make
+ *
+ * It freezes the current KeywordTree. After this point, the tree will not accept any new entries.
+ *
+ * ==== Note: This method is called internally by search
+ *
+ *   require 'ahocorasick'
+ *   
+ *   kwt = Ahocorasick::KeywordTree.new
+ *
+ *   kwt.add_string("one")
+ *   kwt.add_string("two")
+ *   kwt.make()
+ */
 static VALUE 
 rb_kwt_make(VALUE self) { 
   struct kwt_struct_data *kwt_data;
@@ -55,9 +80,32 @@ rb_kwt_make(VALUE self) {
   return self;
 }
 
-//
-// [{ :id => x, :value => y, :starts_at, :ends_at], [.... }
-//
+/*
+ * Document-method: search
+ * call-seq: search
+ *
+ * Search the current tree.
+ *
+ * It returns an array on hashes, e.g.
+ *
+ *   [ { :id => int, :value => int, :starts_at => int, :ends_at => int}, { ... } ]
+ * 
+ * Also, it yields the current result if block given.
+ *
+ * Returns an empty array when the search didn't return any result.
+ *
+ *   # assuming a valid KeywordTree kwt object:
+ *   kwt.add_string("one")
+ *   kwt.add_string("two")
+ *
+ *   kwt.search( "moved two times already" ) do | result |
+ *     result[:id] # => 2
+ *     result[:ends_at] # => 9
+ *     result[:starts_at] # => 6
+ *     result[:value] # => two
+ *   end.size # => 1
+ *
+ */
 static VALUE
 rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   char * result;        // itermediate result
@@ -112,6 +160,18 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   return v_results;
 }
 
+
+/*
+ * Document-method: size
+ * call-seq: size
+ *
+ * Returns the size of this KeywordTree
+ *
+ *    kwt.add_string("foo")
+ *    kwt.add_string("bar")
+ *    kwt.size #=> 2
+ *
+ */ 
 static VALUE 
 rb_kwt_size(VALUE self) { 
   struct kwt_struct_data *kwt_data;
@@ -120,6 +180,23 @@ rb_kwt_size(VALUE self) {
   return INT2FIX(kwt_data->dictionary_size);
 }
 
+
+/*
+ * Document-method: add_string
+ * call-seq: add_string
+ *
+ * Adds a sequence to this KeywordTree.
+ *
+ *    kwt.add_string("foo1$21^ 98N3 ba>Z")
+ *    kwt << "bar" # using the alias
+ *
+ * ==== Note: you can also specify the id, a number between 1 and k
+ *
+ *    kwt.add_string "bar", 123
+ *
+ * This id should be unique in the context of the current tree.
+ *
+ */ 
 static VALUE
 rb_kwt_add_string(int argc, VALUE *argv, VALUE self) { 
   VALUE v_string, v_id;
@@ -153,15 +230,29 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self) {
 
   kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
-  // printf("[internal]==> adding %s as %d, next: %d\n", string, id, kwt_data->last_id);
   return self;
 }
 
-// TODO: 
-//  * use rb_kwt_add_string
-//  * use rb_io* to handle the file
+/*
+ * call-seq: from_file
+ *
+ * Creates a new KeywordTree and loads the dictionary from a file
+ * 
+ *    % cat dict0.txt
+ *    foo
+ *    bar
+ *    base
+ *     
+ *    k= AhoCorasick::KeywordTree.from_file "dict0.txt"
+ *    k.search("basement").size # => 1
+ *
+ */
 static VALUE
 rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) { 
+
+  // TODO: 
+  //  * use rb_kwt_add_string
+  //  * use rb_io* to handle the file
   struct kwt_struct_data *kwt_data;
   char word[1024];
   int id;
@@ -203,7 +294,7 @@ rb_kwt_struct_alloc(VALUE klass)
 }
 
 /*
- *
+ * Blump.
  */
 void Init_ahocorasick() {
   rb_mAhoCorasick = rb_define_module("AhoCorasick");
