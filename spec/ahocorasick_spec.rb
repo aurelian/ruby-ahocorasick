@@ -19,6 +19,10 @@ describe KeywordTree do
       @kwt= KeywordTree.new
     end
 
+    # XXX: is this usefull?
+    after(:each) do
+      @kwt= nil
+    end
     it "should return an array" do
       @kwt << "foo"
       @kwt.search("bar").class.should == Array
@@ -27,6 +31,15 @@ describe KeywordTree do
     it "the array should contain hashes" do
       @kwt << "bar" << "foo"
       @kwt.search("foo")[0].class.should == Hash
+    end
+    
+    # XXX: this is subject of ...talks
+    it "should return nil if block_given?" do
+      @kwt.search("foo"){|r| r[:id]}.should == nil
+    end
+
+    it "should return nil/empty array if no results" do
+      @kwt.search("baba").should == nil
     end
 
     it "each hash should have the required symbols values" do

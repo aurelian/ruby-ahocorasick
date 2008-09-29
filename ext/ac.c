@@ -98,12 +98,10 @@ int ac_add_string(AC_STRUCT *node, char *P, int M, int id)
       node->Plengths[i] = 0;
     node->Psize = newsize;
   }
-
-  if (node->Plengths[id] != 0) {
-    // fprintf(stderr, "Error in Aho-Corasick preprocessing.  "
-    //         "Duplicate identifiers\n");
+  
+  // duplicate id
+  if (node->Plengths[id] != 0)
     return 0;
-  }
 
   /*
    * Add the string to the keyword tree.
@@ -128,6 +126,7 @@ int ac_add_string(AC_STRUCT *node, char *P, int M, int id)
 #ifdef STATS
     node->prep_old_edges++;
 #endif
+
   }
 
   /*
@@ -150,6 +149,7 @@ int ac_add_string(AC_STRUCT *node, char *P, int M, int id)
 #ifdef STATS
       node->prep_new_edges++;
 #endif
+
     }
     if (j <= M) {
       while (list != NULL) {

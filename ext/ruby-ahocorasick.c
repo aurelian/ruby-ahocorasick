@@ -123,23 +123,23 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
   Check_Type(v_search, T_STRING);
   // get the structure
   KeywordTree(self, kwt_data);
-  // freeze the tree, if not already frozen
+  // freeze the tree, if not already
   if(kwt_data->is_frozen == 0) {
     ac_prep( kwt_data->tree );
     kwt_data->is_frozen = 1;
   }
   // prepare the return value
-  v_results= rb_ary_new();
-  // fail quickly
+  v_results= rb_block_given_p()? Qnil : rb_ary_new();
+  // fail quickly and return the empty array
   if(kwt_data->dictionary_size == 0) 
     return v_results;
   // prepare the search
   ac_search_init(kwt_data->tree, RSTRING( v_search )->ptr, RSTRING( v_search )->len);
   // loop trought the results
   while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
+    // printf("\n--\n[internal]==> %s\n--\n", kwt_data->tree->T);
     // this is an individual result as a hash
     v_result= rb_hash_new();
-    
     rb_hash_aset( v_result, sym_id, INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
     rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 1 ) );
@@ -148,16 +148,25 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
 
-    // yield this hash
-    if(rb_block_given_p())
+    // yield this hash or, add it to the results
+    if(rb_block_given_p()) {
       rb_yield(v_result);
+    } else {
+      rb_ary_push( v_results, v_result );
+    }
 
-    // store in the results array
-    rb_ary_push( v_results, v_result );
     free(result);
   }
-  // return all the results
-  return v_results;
+  
+  // printf("[internal]==> got %ld results\n", RARRAY(v_results)->len);
+
+  // return v_results;
+  // return the results or nil if none
+  if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
+    return v_results;
+  } else {
+    return Qnil;
+  }
 }
 
 
@@ -253,6 +262,7 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) {
   // TODO: 
   //  * use rb_kwt_add_string
   //  * use rb_io* to handle the file
+
   struct kwt_struct_data *kwt_data;
   char word[1024];
   int id;
