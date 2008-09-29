@@ -1,3 +1,23 @@
+//
+// Getting started with Aho-Corasick from Strmat
+//
+// lasick Makefile:
+//
+// --
+// ac.o :
+//   gcc -c -fPIC -shared ac.c
+// libasick : ac.o
+//   gcc -shared -Wl,-soname,libasick.so -o libasick.so.1.0.1
+//   ar rcs libasick.a ac.o
+// clean : 
+//   rm -rf *.o *.a *.so* *.dylib*
+// --
+//
+// Compile this stuff - asick is the library name, generated with the above Makefile :)
+//
+//   gcc sample.c -o ac-sample -I../ext/ -L../ext/ -lasick
+//
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +49,7 @@ int main(int argc, char *argv[]) {
     fread(search, 1, lSize-1, input);
   }
 
-  dictionary= fopen("dictionary.txt", "r");
+  dictionary= fopen("../spec/data/dictionary.txt", "r");
 
   if(dictionary == NULL) {
     printf("Error: can't open file.\n");
