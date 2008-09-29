@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require './ahocorasick'
+require File.dirname(__FILE__) + '/../ext/ahocorasick'
 
 k= AhoCorasick::KeywordTree.new
 

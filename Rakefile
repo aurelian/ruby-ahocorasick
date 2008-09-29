@@ -56,6 +56,21 @@ task :default do
   puts "Ok"
 end
 
+desc "Runs ruby extconf.rb"
+task :extconf do
+  `cd ext && ruby extconf.rb && cd ../`
+end
+
+desc "Makes the extension"
+task :ext => :extconf do
+  `cd ext/ && make && cd ../`
+end
+
+desc "Cleans the workspace"
+task :clean do
+  `rm -rf ext/*.o ext/*.so ext/Makefile ext/*.bundle`
+end
+
 desc "Run rspec"
 Spec::Rake::SpecTask.new(:spec) do |t|
   t.spec_opts = ["-c"]
