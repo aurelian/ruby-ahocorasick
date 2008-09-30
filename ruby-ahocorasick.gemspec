@@ -1,6 +1,6 @@
 
 GEM_NAME= 'ruby-ahocorasick'
-GEM_VERSION= '0.2'
+GEM_VERSION= '0.2.1'
 
 PKG_FILES = FileList[
   'ext/extconf.rb',
@@ -14,13 +14,6 @@ PKG_FILES = FileList[
   #'spec/data/melville-moby_dick.txt.tgz',
   '[A-Z]*'
 ]
-
-#PKG_FILES.exclude('ext/*.o')
-#PKG_FILES.exclude('ext/*.bundle')
-#PKG_FILES.exclude('ext/*.a')
-#PKG_FILES.exclude('ext/*.so')
-#PKG_FILES.exclude('ext/Makefile')
-#PKG_FILES.exclude('Rakefile')
 
 GEMSPEC = Gem::Specification.new do | s |
   s.name = GEM_NAME

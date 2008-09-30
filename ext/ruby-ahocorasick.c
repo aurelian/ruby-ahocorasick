@@ -6,7 +6,7 @@
 //
 
 //
-// TODO: new methods
+// TODO: new methods?
 //  * kwt[id] = word
 //  * kwt.from_file (class instance method)
 //
@@ -40,7 +40,8 @@ struct kwt_struct_data {
  *
  */
 static VALUE 
-rb_kwt_init(VALUE self) { 
+rb_kwt_init(VALUE self)
+{ 
   AC_STRUCT * tree;
   struct kwt_struct_data *kwt_data;
 
@@ -71,7 +72,8 @@ rb_kwt_init(VALUE self) {
  *   kwt.make()
  */
 static VALUE 
-rb_kwt_make(VALUE self) { 
+rb_kwt_make(VALUE self)
+{ 
   struct kwt_struct_data *kwt_data;
   KeywordTree(self, kwt_data);
 
@@ -105,7 +107,8 @@ rb_kwt_make(VALUE self) {
  *
  */
 static VALUE
-rb_kwt_search(int argc, VALUE *argv, VALUE self) {
+rb_kwt_search(int argc, VALUE *argv, VALUE self)
+{
   char * result;        // itermediate result
   char * remain;        // returned by ac_search, the remaing text to search
   int lgt, id, ends_at; // filled in by ac_search, the id, length and ends_at position
@@ -153,6 +156,8 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     free(result);
   }
   
+  // TODO: maybe the Tree can be re-opened to add new items to dictionary
+
   // return the results or nil if none
   // if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
   return v_results;
@@ -174,7 +179,8 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
  *
  */ 
 static VALUE 
-rb_kwt_size(VALUE self) { 
+rb_kwt_size(VALUE self)
+{ 
   struct kwt_struct_data *kwt_data;
   KeywordTree(self, kwt_data);
 
@@ -199,7 +205,8 @@ rb_kwt_size(VALUE self) {
  *
  */ 
 static VALUE
-rb_kwt_add_string(int argc, VALUE *argv, VALUE self) { 
+rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
+{ 
   VALUE v_string, v_id;
   struct kwt_struct_data *kwt_data;
   char * string;
@@ -249,7 +256,8 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self) {
  *
  */
 static VALUE
-rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass) { 
+rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass)
+{ 
 
   // TODO: 
   //  * use rb_kwt_add_string
