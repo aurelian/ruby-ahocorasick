@@ -1,4 +1,3 @@
-
 require 'rubygems'
 require 'rake'
 require 'rake/gempackagetask'
@@ -11,12 +10,9 @@ pt = Rake::GemPackageTask.new(GEMSPEC) do |p|
   p.need_zip = true
 end
 
-# Rake::GemPackageTask.new(GEMSPEC).define
-
 task :install => [:package] do
   `gem install pkg/#{GEM_NAME}-#{GEM_VERSION}`
 end
-
 
 task :default do
   puts "Ok"
