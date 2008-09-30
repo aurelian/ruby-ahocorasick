@@ -13,7 +13,7 @@ k << "database"
 
 query= "I've moved my data to a database"
 
-k.search query do | r |
+k.search(query).each do | r |
   puts "-> [ " + r[:id].to_s + " ] " + r[:value] + " / " + query[r[:starts_at]].chr + ".." + query[r[:ends_at]-1].chr
 end
 

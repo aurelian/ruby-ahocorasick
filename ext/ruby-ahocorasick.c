@@ -90,20 +90,18 @@ rb_kwt_make(VALUE self) {
  *
  *   [ { :id => int, :value => int, :starts_at => int, :ends_at => int}, { ... } ]
  * 
- * Also, it yields the current result if block given.
- *
  * Returns an empty array when the search didn't return any result.
  *
  *   # assuming a valid KeywordTree kwt object:
  *   kwt.add_string("one")
  *   kwt.add_string("two")
  *
- *   kwt.search( "moved two times already" ) do | result |
+ *   kwt.search( "moved two times already" ).each  do | result |
  *     result[:id] # => 2
  *     result[:ends_at] # => 9
  *     result[:starts_at] # => 6
  *     result[:value] # => two
- *   end.size # => 1
+ *   end # => 1
  *
  */
 static VALUE
@@ -129,7 +127,8 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     kwt_data->is_frozen = 1;
   }
   // prepare the return value
-  v_results= rb_block_given_p()? Qnil : rb_ary_new();
+  // v_results= rb_block_given_p()? Qnil : rb_ary_new();
+  v_results= rb_ary_new();
   // fail quickly and return the empty array
   if(kwt_data->dictionary_size == 0) 
     return v_results;
@@ -147,19 +146,19 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self) {
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
 
     // yield this hash or, add it to the results
-    if(rb_block_given_p())
-      rb_yield(v_result);
-    else
-      rb_ary_push( v_results, v_result );
+    // if(rb_block_given_p())
+    //   rb_yield(v_result);
+    // else
+    rb_ary_push( v_results, v_result );
     free(result);
   }
   
   // return the results or nil if none
-  if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
-    return v_results;
-  } else {
-    return Qnil;
-  }
+  // if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
+  return v_results;
+  // } else {
+  //   return Qnil;
+  // }
 }
 
 

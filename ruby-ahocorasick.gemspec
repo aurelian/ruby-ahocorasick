@@ -1,24 +1,26 @@
 
+GEM_NAME= 'ruby-ahocorasick'
+GEM_VERSION= '0.2'
+
 PKG_FILES = FileList[
   'ext/extconf.rb',
   'ext/ruby-ahocorasick.c',
   'ext/ac.h',
   'ext/ac.c',
-  #'spec/ahocorasick_spec.rb',
+  'examples/*.rb',
+  'examples/sample.c',
+  'spec/*.rb',
   #'spec/data/en.words.tgz',
   #'spec/data/melville-moby_dick.txt.tgz',
-  '[A-Z]*',
+  '[A-Z]*'
 ]
 
-PKG_FILES.exclude('ext/*.o')
-PKG_FILES.exclude('ext/*.bundle')
-PKG_FILES.exclude('ext/*.a')
-PKG_FILES.exclude('ext/*.so')
-PKG_FILES.exclude('ext/Makefile')
-PKG_FILES.exclude('Rakefile')
-
-GEM_NAME= 'ruby-ahocorasick'
-GEM_VERSION= '0.1.4'
+#PKG_FILES.exclude('ext/*.o')
+#PKG_FILES.exclude('ext/*.bundle')
+#PKG_FILES.exclude('ext/*.a')
+#PKG_FILES.exclude('ext/*.so')
+#PKG_FILES.exclude('ext/Makefile')
+#PKG_FILES.exclude('Rakefile')
 
 GEMSPEC = Gem::Specification.new do | s |
   s.name = GEM_NAME
@@ -34,8 +36,8 @@ GEMSPEC = Gem::Specification.new do | s |
   s.rdoc_options << '--title' <<  'Ruby-AhoCorasick' << 
     '--inline-source' << 'ext/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
   s.author = "Aurelian Oancea"
-  s.email = "aurelian@locknet.ro"
-  s.homepage = "http://locknet.ro"
+  s.email = "aurelian [ at ] locknet.ro"
+  s.homepage = "http://www.locknet.ro"
   s.rubyforge_project = "ruby-ahocorasick"
 end
 

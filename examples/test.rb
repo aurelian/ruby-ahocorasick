@@ -36,7 +36,7 @@ end
 
 k << "bacau"
 
-k.search 'am fost la bacau' do | result |
+k.search('am fost la bacau').each do | result |
   puts result.inspect
 end
 
