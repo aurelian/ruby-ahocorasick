@@ -25,7 +25,7 @@ describe KeywordTree do
     end
     it "should return an array" do
       @kwt << "foo"
-      @kwt.search("bar").class.should == Array
+      @kwt.search("foo").class.should == Array
     end
 
     it "the array should contain hashes" do
@@ -33,18 +33,18 @@ describe KeywordTree do
       @kwt.search("foo")[0].class.should == Hash
     end
     
-    # XXX: this is subject of ...talks. no yield at this point
-    # it "should return nil if block_given?" do
-    #   @kwt.search("foo"){|r| r[:id]}.should == nil
-    # end
+    # XXX: this is subject of ...talks
+    it "should return nil if block_given?" do
+      @kwt.search("foo"){|r| r[:id]}.should == nil
+    end
 
     it "should return empty array if no results" do
-      @kwt.search("baba").should == []
+      @kwt.search("1a4a").should == []
     end
 
     it "each hash should have the required symbols values" do
       @kwt << "bar" << "foo"
-      @kwt.search("foo").each do | r |
+      @kwt.search("foo") do | r |
         r[:id].class.should == Fixnum
         r[:starts_at].class.should == Fixnum
         r[:ends_at].class.should == Fixnum
@@ -57,7 +57,7 @@ describe KeywordTree do
       #        |  |
       @kwt << "data"
       q= "data moved"
-      @kwt.search(q).each do | result |
+      @kwt.search(q) do | result |
         result[:starts_at].should == 0
         result[:ends_at].should   == 4
       end
@@ -70,7 +70,7 @@ describe KeywordTree do
       #   01234567890123456789023
       #                 |       |
       q= "data moved to bucurești"
-      @kwt.search(q).each do | result |
+      @kwt.search(q) do | result |
         result[:starts_at].should == 14
         result[:ends_at].should   == 24
       end
@@ -80,7 +80,7 @@ describe KeywordTree do
       @kwt << "expected"
       #    012345678901234578901234567890
       q = "moved to bucurești as expected"
-      @kwt.search(q).each do | r |
+      @kwt.search(q) do | r |
         r[:starts_at].should == 23
         r[:ends_at].should   == q.size
         (r[:ends_at]-r[:starts_at]).should == r[:value].size
