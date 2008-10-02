@@ -33,11 +33,6 @@ describe KeywordTree do
       @kwt.search("foo")[0].class.should == Hash
     end
     
-    # XXX: this is subject of ...talks
-    # it "should return nil if block_given?" do
-    #  @kwt.search("foo"){|r| r[:id]}.should == nil
-    #end
-
     it "should return empty array if no results" do
       @kwt.search("1a4a").should == []
     end
@@ -86,6 +81,14 @@ describe KeywordTree do
         (r[:ends_at]-r[:starts_at]).should == r[:value].size
       end
     end
+    
+    it "even more unicode" do
+      @kwt << "șșt"
+      #                    0124789
+      result= @kwt.search("mușștar").first
+      result[:starts_at].should == 2
+      result[:ends_at].should == result[:starts_at] + "șșt".size
+    end
 
     it "checks for result length" do
       @kwt << "foo"
@@ -101,7 +104,6 @@ describe KeywordTree do
   describe "Context Match vs. Exact Word Match" do
 
     before(:each) do 
-      # data, base, database
       @kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
     end
 
