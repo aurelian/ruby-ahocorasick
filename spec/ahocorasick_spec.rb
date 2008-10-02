@@ -23,23 +23,25 @@ describe KeywordTree do
     after(:each) do
       @kwt= nil
     end
-    it "should return an array" do
+    it "find_all should return an array" do
       @kwt << "foo"
       @kwt.find_all("foo").class.should == Array
     end
 
     it "the array should contain hashes" do
-      @kwt << "bar" << "foo"
-      @kwt.search("foo")[0].class.should == Hash
+      @kwt << "bar"
+      @kwt << "foo"
+      @kwt.find_all("foo")[0].class.should == Hash
     end
     
     it "should return empty array if no results" do
-      @kwt.search("1a4a").should == []
+      @kwt.find_all("1a4a").should == []
     end
 
     it "each hash should have the required symbols values" do
-      @kwt << "bar" << "foo"
-      @kwt.search("foo").each do | r |
+      @kwt << "bar"
+      @kwt << "foo"
+      @kwt.find_all("foo").each do | r |
         r[:id].class.should == Fixnum
         r[:starts_at].class.should == Fixnum
         r[:ends_at].class.should == Fixnum
@@ -52,7 +54,7 @@ describe KeywordTree do
       #        |  |
       @kwt << "data"
       q= "data moved"
-      @kwt.search(q).each do | result |
+      @kwt.find_all(q).each do | result |
         result[:starts_at].should == 0
         result[:ends_at].should   == 4
       end
@@ -120,6 +122,7 @@ describe KeywordTree do
       kwt << "bar"
       kwt.size.should == 2
     end
+
     it "should add 2 strings with id" do
       kwt= KeywordTree.new
       kwt.add_string "foo", 1
@@ -146,6 +149,13 @@ describe KeywordTree do
       kwt.add_string "foo", 1990
       kwt << "bar"
       kwt.size.should == 3
+    end
+
+    it "should return the id" do
+      kwt= KeywordTree.new
+      kwt.add_string("foo").should == 1
+      kwt.add_string("bar", 2008).should == 2008
+      kwt.add_string("kwt").should == 2009
     end
 
     it "should add strings from file and manually" do

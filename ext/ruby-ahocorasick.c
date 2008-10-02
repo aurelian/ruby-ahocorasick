@@ -203,12 +203,17 @@ rb_kwt_size(VALUE self)
  *
  *    kwt.add_string("foo1$21^ 98N3 ba>Z")
  *    kwt << "bar" # using the alias
- *
+ * 
  * ==== Note: you can also specify the id, a number between 1 and k
  *
- *    kwt.add_string "bar", 123
+ *    kwt.add_string "bar", 123 # => 123
  *
  * This id should be unique in the context of the current tree.
+ *
+ * Returns the id of the inserted object.
+ *
+ *    kwt.add_string("test", 18) # => 18
+ *    kwt.add_string("baz") # => 19
  *
  */ 
 static VALUE
@@ -239,13 +244,16 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
     id= NUM2INT(v_id);
   }
   
+  // printf("[internal]==> %d\n", id);
+  
   if( ac_add_string(kwt_data->tree, string, strlen(string), id) == 0 ) {
     rb_raise(rb_eRuntimeError, "Failed to add `%s\", duplicate id `%d\"?", string, id);
   }
 
   kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
-  return self;
+  // printf("[internal]==> %d\n", id);
+  return id;
 }
 
 /*
