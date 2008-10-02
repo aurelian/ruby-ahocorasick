@@ -1,14 +1,21 @@
 
 //
-// (c) 2008, Aurelian Oancea < aurelian at locknet . ro >
+// (c) 2008, Aurelian Oancea < oancea at gmail dot com >
 //
 // Released under MIT-LICENSE
 //
 
 //
 // TODO: new methods?
+//
 //  * kwt[id] = word
 //  * kwt.from_file (class instance method)
+//
+//  * kwt.find_each ("str") {|r| .. }
+//  * kwt.find_first("str")
+//  * kwt.find_all  ("str")
+//
+// TODO: rename search to find_all
 //
 
 #include <ruby.h>
@@ -316,7 +323,10 @@ void Init_ahocorasick() {
   rb_define_method(rb_cKeywordTree, "size", rb_kwt_size, 0);
   rb_define_method(rb_cKeywordTree, "make", rb_kwt_make, 0);
   rb_define_method(rb_cKeywordTree, "add_string", rb_kwt_add_string, -1);
+
   rb_define_method(rb_cKeywordTree, "search", rb_kwt_search, -1);
+  rb_define_alias(rb_cKeywordTree, "find_all", "search");
+
   rb_define_alias(rb_cKeywordTree, "<<", "add_string");
   rb_define_singleton_method(rb_cKeywordTree, "from_file", rb_kwt_new_from_file, -1);
 

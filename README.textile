@@ -31,27 +31,31 @@ then,
 gem install aurelian-ruby-ahocorasick
 </pre>
 
-h5. Note 1
+h5. Note
 
-I'm still thinking if I should publish this gem to rubyforge too.
+It's known to work - compile - install on Ubuntu 8.04 and Mac OS 10.4.*. It should work out of the box if you have gcc around.
 
-h5. Note 2
+h3. Okay, so how do I use it?
 
-It's known to work/compile/install on Ubuntu 8.04 and Mac OS 10.4.something. It should work more or less out of the box if you have gcc around.
-I don't have any knowledge of Microsoft compilers 
+<pre>
+  require 'ahocorasick'
 
-[aurelian@stalingrad ruby-ahocorasick]$ time ruby examples/dict.rb 
-110055
-711
+  keyword_tree= AhoCorasick::KeywordTree.new # creates a new tree
+  keyword_tree.add_string( "foo-- Z@!bar" ) # add's a keyword to the tree
+  keyword_tree.add_string( "cervantes" )    # even more
 
-real    0m0.538s
-user    0m0.435s
-sys     0m0.036s
+  results= keyword_tree.find_all( "1011000129 foo-- Z@!bar761 ! 001211 6xU" ).each do | result |
+    result[:value]     # => "foo-- Z@!bar"
+    result[:starts_at] # => 11
+    result[:ends_at]   # => 23
+    result[:id]        # => 1
+  end
+
 </pre>
 
-h3. Additional Reading / Implementations
+h3. Additional Reading 
 
-Other suffix - tree 
+Other suffix - tree implementations:
 
  * "Strmat":http://www.cs.ucdavis.edu/~gusfield/strmat.html
  * Pytst / Ruby-Pytst
@@ -59,7 +63,7 @@ Other suffix - tree
  * "Keyword Prospector":http://latimes.rubyforge.org/keyword_prospector/rdoc/
  * "libstree":http://www.cl.cam.ac.uk/~cpk25/libstree/
 
---
+h3. License
 
 (c) 2008 - Aurelian Oancea, < oancea at gmail dot com > 
 

@@ -25,7 +25,7 @@ describe KeywordTree do
     end
     it "should return an array" do
       @kwt << "foo"
-      @kwt.search("foo").class.should == Array
+      @kwt.find_all("foo").class.should == Array
     end
 
     it "the array should contain hashes" do
