@@ -253,7 +253,7 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
   kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
   // printf("[internal]==> %d\n", id);
-  return id;
+  return INT2FIX(id);
 }
 
 /*
