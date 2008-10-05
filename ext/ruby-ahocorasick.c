@@ -15,7 +15,7 @@
 //  * kwt.find_first("str")
 //  * kwt.find_all  ("str")
 //
-// TODO: rename search to find_all
+// TODO: change last_id and dictionary_size to long
 //
 
 #include <ruby.h>
@@ -146,7 +146,6 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
     kwt_data->is_frozen = 1;
   }
   // prepare the return value
-  // v_results= rb_block_given_p()? Qnil : rb_ary_new();
   v_results= rb_ary_new();
   // fail quickly and return the empty array
   if(kwt_data->dictionary_size == 0) 
@@ -157,9 +156,9 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
   while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
     // this is an individual result as a hash
     v_result= rb_hash_new();
-    rb_hash_aset( v_result, sym_id, INT2FIX(id) );
+    rb_hash_aset( v_result, sym_id,        INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
-    rb_hash_aset( v_result, sym_ends_at, INT2FIX( ends_at - 1 ) );
+    rb_hash_aset( v_result, sym_ends_at,   INT2FIX( ends_at - 1 ) );
     result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );

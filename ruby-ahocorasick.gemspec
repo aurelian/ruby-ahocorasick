@@ -31,7 +31,7 @@ GEMSPEC = Gem::Specification.new do | s |
   s.rdoc_options << '--title' <<  'Ruby-AhoCorasick' << 
     '--inline-source' << 'ext/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
   s.author = "Aurelian Oancea"
-  s.email = "aurelian [ at ] locknet.ro"
+  s.email = "oancea at gmail dot com"
   s.homepage = "http://www.locknet.ro"
   s.rubyforge_project = "ruby-ahocorasick"
 end
