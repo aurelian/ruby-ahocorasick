@@ -170,6 +170,13 @@ describe KeywordTree do
       lambda{kwt << "foo"}.should raise_error(RuntimeError)
     end
 
+    it "should work to add entries on the tree after a search" do
+      kwt= KeywordTree.from_file File.dirname(__FILE__) + "/data/dict0.txt"
+      kwt.find_all("foo-bar not found")
+      kwt.add_string("not found")
+      kwt.find_all("foo-bar not found").size.should == 1
+    end
+
   end
 
   describe "Benchmarks. Loading from a file" do
@@ -187,7 +194,7 @@ describe KeywordTree do
       load_time= Time.now
       results= k.find_all( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
       puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
-      (Time.now-load_time).should < 1.2
+      (Time.now-load_time).should < 1.3
     end
   end
 

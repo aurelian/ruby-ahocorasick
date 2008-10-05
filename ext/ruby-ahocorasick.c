@@ -75,7 +75,7 @@ rb_kwt_init(VALUE self)
  * Document-method: make
  * call-seq: make
  *
- * It freezes the current KeywordTree. After this point, the tree will not accept any new entries.
+ * It freezes the current KeywordTree.
  *
  * ==== Note: This method is called internally by search
  *
@@ -99,8 +99,8 @@ rb_kwt_make(VALUE self)
 }
 
 /*
- * Document-method: search
- * call-seq: search
+ * Document-method: find_all
+ * call-seq: find_all
  *
  * Search the current tree.
  *
@@ -165,7 +165,8 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
     rb_ary_push( v_results, v_result );
     free(result);
   }
-  // TODO: maybe the Tree can be re-opened to add new items to dictionary
+  // reopen the tree
+  kwt_data->is_frozen= 0;
   return v_results;
 }
 
