@@ -93,9 +93,15 @@ rb_kwt_make(VALUE self)
   struct kwt_struct_data *kwt_data;
   KeywordTree(self, kwt_data);
 
-  ac_prep( kwt_data->tree );
-  kwt_data->is_frozen = 1;
-  return self;
+  if(kwt_data->is_frozen == 1)
+    return Qtrue;
+  
+  if(ac_prep( kwt_data->tree ) == 1) {
+    kwt_data->is_frozen = 1;
+    return Qtrue;
+  }
+
+  rb_raise(rb_eRuntimeError, "Cannot freeze the tree");
 }
 
 /*
@@ -142,7 +148,8 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
   KeywordTree(self, kwt_data);
   // freeze the tree, if not already
   if(kwt_data->is_frozen == 0) {
-    ac_prep( kwt_data->tree );
+    if(ac_prep( kwt_data->tree ) == 0) 
+      rb_raise(rb_eRuntimeError, "Cannot freeze the tree");
     kwt_data->is_frozen = 1;
   }
   // prepare the return value
