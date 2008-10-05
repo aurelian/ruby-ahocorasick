@@ -1,6 +1,5 @@
-
 GEM_NAME= 'ruby-ahocorasick'
-GEM_VERSION= '0.3.2'
+GEM_VERSION= '0.3.3'
 
 PKG_FILES = [
   'ext/extconf.rb',

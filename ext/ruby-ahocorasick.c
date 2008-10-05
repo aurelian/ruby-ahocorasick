@@ -123,7 +123,7 @@ rb_kwt_make(VALUE self)
  *
  */
 static VALUE
-rb_kwt_search(int argc, VALUE *argv, VALUE self)
+rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
 {
   char * result;        // itermediate result
   char * remain;        // returned by ac_search, the remaing text to search
@@ -321,17 +321,16 @@ void Init_ahocorasick() {
   rb_define_method(rb_cKeywordTree, "size", rb_kwt_size, 0);
   rb_define_method(rb_cKeywordTree, "make", rb_kwt_make, 0);
   rb_define_method(rb_cKeywordTree, "add_string", rb_kwt_add_string, -1);
-
-  rb_define_method(rb_cKeywordTree, "search", rb_kwt_search, -1);
-  rb_define_alias(rb_cKeywordTree, "find_all", "search");
-
   rb_define_alias(rb_cKeywordTree, "<<", "add_string");
+
+  rb_define_method(rb_cKeywordTree, "find_all", rb_kwt_find_all, -1);
+  rb_define_alias(rb_cKeywordTree, "search", "find_all");
+
   rb_define_singleton_method(rb_cKeywordTree, "from_file", rb_kwt_new_from_file, -1);
 
-  sym_id= ID2SYM(rb_intern("id"));
-  sym_value= ID2SYM(rb_intern("value"));
-  sym_ends_at= ID2SYM( rb_intern("ends_at") );
+  sym_id       = ID2SYM(rb_intern("id"));
+  sym_value    = ID2SYM(rb_intern("value"));
+  sym_ends_at  = ID2SYM( rb_intern("ends_at") );
   sym_starts_at= ID2SYM( rb_intern("starts_at") );
-
 }
 
