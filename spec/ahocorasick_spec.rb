@@ -67,7 +67,7 @@ describe KeywordTree do
       #   01234567890123456789023
       #                 |       |
       q= "data moved to bucurești"
-      @kwt.search(q).each do | result |
+      @kwt.find_all(q).each do | result |
         result[:starts_at].should == 14
         result[:ends_at].should   == 24
       end
@@ -77,7 +77,7 @@ describe KeywordTree do
       @kwt << "expected"
       #    012345678901234578901234567890
       q = "moved to bucurești as expected"
-      @kwt.search(q).each do | r |
+      @kwt.find_all(q).each do | r |
         r[:starts_at].should == 23
         r[:ends_at].should   == q.size
         (r[:ends_at]-r[:starts_at]).should == r[:value].size
@@ -86,15 +86,15 @@ describe KeywordTree do
     
     it "even more unicode" do
       @kwt << "șșt"
-      #                    0124789
-      result= @kwt.search("mușștar").first
+      #                      0124789
+      result= @kwt.find_all("mușștar").first
       result[:starts_at].should == 2
       result[:ends_at].should == result[:starts_at] + "șșt".size
     end
 
     it "checks for result length" do
       @kwt << "foo"
-      result= @kwt.search("foo").first
+      result= @kwt.find_all("foo").first
       #          4                 0
       (result[:ends_at]-result[:starts_at]).should == result[:value].size
       "foo"[result[:ends_at]].should == nil
@@ -110,7 +110,7 @@ describe KeywordTree do
     end
 
     it "should match on context" do
-      @kwt.search("I've moved the data to a new database").size.should == 4
+      @kwt.find_all("I've moved the data to a new database").size.should == 4
     end
 
   end
@@ -146,8 +146,8 @@ describe KeywordTree do
     it "should work to add a random id" do
       kwt= KeywordTree.new
       kwt << "baz"
-      kwt.add_string "foo", 1990
-      kwt << "bar"
+      kwt.add_string("foo", 1990).should == 1990
+      kwt.add_string("bar").should == 1991
       kwt.size.should == 3
     end
 
@@ -185,7 +185,7 @@ describe KeywordTree do
       start= Time.now
       k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
       load_time= Time.now
-      results= k.search( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
+      results= k.find_all( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
       puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
       (Time.now-load_time).should < 1.2
     end

@@ -37,6 +37,15 @@ struct kwt_struct_data {
   int is_frozen;
 };
 
+// int
+// rb_add_string(struct kwt_struct_data *kwt, char *word, int size, int id) {
+//   if(ac_add_string( kwt->tree, word, size, id ) == 0)
+//     return 0;
+//   kwt->dictionary_size++;
+//   kwt->last_id= id+1;
+//   return 1;
+// }
+
 /*
  * call-seq: initialize
  *
@@ -154,25 +163,12 @@ rb_kwt_search(int argc, VALUE *argv, VALUE self)
     result = (char*) malloc (sizeof(char)*lgt);
     sprintf( result, "%.*s", lgt, remain);
     rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
-
-    // yield this hash or, add it to the results
-    // if(rb_block_given_p())
-    //   rb_yield(v_result);
-    // else
     rb_ary_push( v_results, v_result );
     free(result);
   }
-  
   // TODO: maybe the Tree can be re-opened to add new items to dictionary
-
-  // return the results or nil if none
-  // if( v_results != Qnil && RARRAY(v_results)->len > 0 ) {
   return v_results;
-  // } else {
-  //   return Qnil;
-  // }
 }
-
 
 /*
  * Document-method: size
@@ -193,7 +189,6 @@ rb_kwt_size(VALUE self)
 
   return INT2FIX(kwt_data->dictionary_size);
 }
-
 
 /*
  * Document-method: add_string
@@ -228,7 +223,6 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
  
   Check_Type(v_string, T_STRING);
   string= RSTRING(v_string)->ptr;
-
   KeywordTree(self, kwt_data);
 
   if(kwt_data->is_frozen == 1)
@@ -244,15 +238,11 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
     id= NUM2INT(v_id);
   }
   
-  // printf("[internal]==> %d\n", id);
-  
-  if( ac_add_string(kwt_data->tree, string, strlen(string), id) == 0 ) {
+  if(ac_add_string(kwt_data->tree, string, strlen(string), id) == 0)
     rb_raise(rb_eRuntimeError, "Failed to add `%s\", duplicate id `%d\"?", string, id);
-  }
 
   kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
-  // printf("[internal]==> %d\n", id);
   return INT2FIX(id);
 }
 
@@ -293,14 +283,14 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass)
   KeywordTree( self, kwt_data );
 
   dictionary = fopen( RSTRING( f_string )->ptr, "r" );
-  if(dictionary == NULL) {
+  if(dictionary == NULL)
     rb_raise(rb_eRuntimeError, "Cannot open `%s\". No such file?", RSTRING(f_string)->ptr);
-  }
 
   while(fgets(word, 1024, dictionary) != NULL) {
     ac_add_string(kwt_data->tree, word, strlen(word)-1, id++);
     kwt_data->dictionary_size++;
   }
+
   kwt_data->last_id= id+1;
   fclose(dictionary);
   return self;
