@@ -4,6 +4,17 @@ include AhoCorasick
 
 describe KeywordTree do
 
+  describe "bugs" do
+    it "should not crash Ruby :)" do
+      k= KeywordTree.new
+      k.add_string "@usernameguy"
+      k.add_string "@usernameguy-test"
+      k << "@usernameguy-another+test!"
+      query = "@usernameguy @torrez"
+      k.find_all(query).size.should == 1
+    end
+  end
+
   describe "How to create a new KeywordTree" do
     it "should create a new KeywordTree" do
       KeywordTree.new.class.should == KeywordTree
