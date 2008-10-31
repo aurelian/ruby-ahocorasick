@@ -131,12 +131,11 @@ rb_kwt_make(VALUE self)
 static VALUE
 rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
 {
-  char * result;        // itermediate result
   char * remain;        // returned by ac_search, the remaing text to search
-  int lgt, id, ends_at; // filled in by ac_search, the id, length and ends_at position
-  int starts_at;
+  int lgt, id, ends_at, starts_at; // filled in by ac_search: the length of the result, the id, and starts_at/ends_at position
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
+
   VALUE v_search;  // search string, function argument
   struct kwt_struct_data *kwt_data;
   
@@ -166,11 +165,8 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
     rb_hash_aset( v_result, sym_id,        INT2FIX(id) );
     rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
     rb_hash_aset( v_result, sym_ends_at,   INT2FIX( ends_at - 1 ) );
-    result = (char*) malloc (sizeof(char)*lgt);
-    sprintf( result, "%.*s", lgt, remain);
-    rb_hash_aset( v_result, sym_value, rb_str_new(result, lgt) );
+    rb_hash_aset( v_result, sym_value, rb_str_new(remain, lgt) );
     rb_ary_push( v_results, v_result );
-    free(result);
   }
   // reopen the tree
   kwt_data->is_frozen= 0;
