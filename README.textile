@@ -1,30 +1,36 @@
 h1. This is a work in progress.
 
-h3. Introduction
+
+h2. Introduction
 
 This library is a "Ruby":http://ruby-lang.org extension, a wrapper around the "Aho-Corasick":http://en.wikipedia.org/wiki/Aho-Corasick_algorithm implementation in C, found in "Strmat":http://www.cs.ucdavis.edu/~gusfield/strmat.html package.
 
 The source code (ac.c and ac.h) was "adapted" from Strmat. In fact, I've changed only 3-4 lines of code from the original implementation so it will feat my needs: search needed to return the current position in the searched string.
 
-h3. Okay, so what's the idea?
+
+h2. Okay, so what's the idea?
 
 Having a dictionary of known sentences (note: not *words*!), this kick ass algorithm can find individual patterns in an incoming stream of data. Kinda Fast.
 
 The algorithm has 2 stages: one where an internal tree in being build from the given dictionary leaving the search to the second step.
 
-h3. Okay, so where can I use this?
+
+h2. Okay, so where can I use this?
 
 Well, you can do some crazy things with it, like, you can lookup for DNA patterns or maybe analyze network sequences (read: strange and maybe proprietary network protocols), or domestic stuff like building contextual links on your blog posts to enrich your users experience.
 
-h3. Okay, so how can I install it?
 
-h4. Rubygems - Development Version
+h2. Okay, so how can I install it?
+
+
+h3. Rubygems - Development Version
 
 <pre>
 gem install aurelian-ruby-ahocorasick --source=http://gems.github.com
 </pre>
 
-h4. Build it from source
+
+h3. Build it from source
 
 <pre>
 $ git clone git://github.com/aurelian/ruby-ahocorasick.git
@@ -37,18 +43,21 @@ To build and install the gem on your machine (run with sudo if needed):
 $ rake install
 </pre>
 
-@rake -T@ should list other cool tasks, like @rake spec@ to run the rspec test.
+@rake -T@ will list other cool tasks.
 
-h4. Rubygems - Stable Version
+
+h3. Rubygems - Stable Version
 
 There's no stable version right now.
 
-h5. Notes
+
+h4. Notes
 
 It's known to work / compile / install on Ubuntu 8.04 and Mac OS 10.4.*. It should work out of the box if you have gcc around.
 Unfortunately I don't have a Windows PC around nor required knowledge about Microsoft compliers.
 
-h3. Okay, so how do I use it?
+
+h2. Okay, so how do I use it?
 
 <pre>
   require 'ahocorasick'
@@ -68,11 +77,13 @@ h3. Okay, so how do I use it?
 
 You can get some API reference on the "wiki":http://github.com/aurelian/ruby-ahocorasick/wikis.
 
-h3. Bugs? Suggestions? Ideas? Patches?
+
+h2. Bugs? Suggestions? Ideas? Patches?
 
 For now, just use the email address.
 
-h3. Additional Reading 
+
+h2. Additional Reading 
 
 Other suffix - tree implementations:
 
@@ -82,7 +93,8 @@ Other suffix - tree implementations:
  * "Keyword Prospector":http://latimes.rubyforge.org/keyword_prospector/rdoc/
  * "libstree":http://www.cl.cam.ac.uk/~cpk25/libstree/
 
-h3. License
+
+h2. License
 
 (c) 2008 - Aurelian Oancea, < oancea at gmail dot com > 
 
