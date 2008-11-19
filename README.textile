@@ -48,7 +48,11 @@ $ rake install
 
 h3. Rubygems - Stable Version
 
-There's no stable version right now.
+Get version 0.4.5 (released on 19 November 2008) from "rubyforge":http://rubyforge.org/frs/?group_id=4024&release_id=28421 :
+
+<pre>
+$ gem install ruby-ahocorasick
+</pre>
 
 
 h4. Notes
