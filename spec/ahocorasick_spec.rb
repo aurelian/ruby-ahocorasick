@@ -15,6 +15,51 @@ describe KeywordTree do
     end
   end
 
+  describe "not bugs" do
+    it "should return 3 results" do
+      tree= KeywordTree.new
+      tree.add_string "data"
+      tree.add_string "database"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 3
+    end
+     it "should also return 3 results" do
+      tree= KeywordTree.new
+      tree.add_string "database"
+      tree.add_string "data"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 3
+    end
+    it "should return 2 results" do
+      tree= KeywordTree.new
+      tree.add_string "base"
+      tree.add_string "database"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 2
+    end
+    it "should also return 2 results" do
+      tree= KeywordTree.new
+      tree.add_string "database"
+      tree.add_string "base"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 2
+    end
+    it "should return 2 results" do
+      tree= KeywordTree.new
+      tree.add_string "data"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 2
+    end
+    it "should return 1 result on duplicates" do
+      tree= KeywordTree.new
+      tree.add_string "database"
+      tree.add_string "database"
+      results= tree.find_all "move all the data to a new database"
+      results.size.should == 1
+      results[0][:id] == 2
+    end
+  end
+
   describe "How to create a new KeywordTree" do
     it "should create a new KeywordTree" do
       KeywordTree.new.class.should == KeywordTree
