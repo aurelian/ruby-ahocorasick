@@ -132,7 +132,7 @@ static VALUE
 rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
 {
   char * remain;        // returned by ac_search, the remaing text to search
-  int lgt, id, ends_at, starts_at; // filled in by ac_search: the length of the result, the id, and starts_at/ends_at position
+  int lgt, id, ends_at; // filled in by ac_search: the length of the result, the id, and starts_at/ends_at position
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
 
@@ -143,12 +143,14 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
   rb_scan_args(argc, argv, "1", &v_search);
   // it should be string.
   Check_Type(v_search, T_STRING);
+  v_search= StringValue( v_search );
+
   // get the structure
   KeywordTree(self, kwt_data);
   // freeze the tree, if not already
   if(kwt_data->is_frozen == 0) {
     if(ac_prep( kwt_data->tree ) == 0) 
-      rb_raise(rb_eRuntimeError, "Cannot freeze the tree");
+      rb_raise(rb_eRuntimeError, "Cannot freeze the tree!");
     kwt_data->is_frozen = 1;
   }
   // prepare the return value
@@ -157,15 +159,15 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
   if(kwt_data->dictionary_size == 0) 
     return v_results;
   // prepare the search
-  ac_search_init(kwt_data->tree, RSTRING( v_search )->ptr, RSTRING( v_search )->len);
+  ac_search_init(kwt_data->tree, StringValuePtr(v_search), (int)NUM2INT(rb_funcall(v_search, rb_intern("length"), 0)));
   // loop trought the results
   while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
     // this is an individual result as a hash
     v_result= rb_hash_new();
-    rb_hash_aset( v_result, sym_id,        INT2FIX(id) );
-    rb_hash_aset( v_result, sym_starts_at, INT2FIX( ends_at - lgt - 1 ) );
-    rb_hash_aset( v_result, sym_ends_at,   INT2FIX( ends_at - 1 ) );
-    rb_hash_aset( v_result, sym_value, rb_str_new(remain, lgt) );
+    rb_hash_aset( v_result, sym_id,        INT2NUM( (long)id ) );
+    rb_hash_aset( v_result, sym_starts_at, INT2NUM( (long)(ends_at - lgt - 1) ) );
+    rb_hash_aset( v_result, sym_ends_at,   INT2NUM( (long)(ends_at - 1) ) );
+    rb_hash_aset( v_result, sym_value, rb_str_new(remain, (long)lgt) );
     rb_ary_push( v_results, v_result );
   }
   // reopen the tree
@@ -219,30 +221,29 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
 { 
   VALUE v_string, v_id;
   struct kwt_struct_data *kwt_data;
-  char * string;
+  // char * string;
   int id;
 
   rb_scan_args(argc, argv, "11", &v_string, &v_id);
  
   Check_Type(v_string, T_STRING);
-  string= RSTRING(v_string)->ptr;
+  // string= StringValuePtr(v_string);
   KeywordTree(self, kwt_data);
 
   if(kwt_data->is_frozen == 1)
-    rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", string);
+    rb_raise(rb_eRuntimeError, "Cannot add `%s\" into a frozen tree.", StringValuePtr(v_string));
 
   if(v_id == Qnil) {
     id = kwt_data->last_id;
   } else if(TYPE(v_id) != T_FIXNUM) {
-    rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%s\" given.", RSTRING(v_id)->ptr);
+    rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%s\" given.", StringValuePtr(v_id));
   } else if(NUM2INT(v_id) <= 0) {
     rb_raise(rb_eRuntimeError, "Please use a number from 1 to K as id, or leave nil to auto-generate one. `%d\" given.", NUM2INT(v_id));
   } else {
     id= NUM2INT(v_id);
   }
-  
-  if(ac_add_string(kwt_data->tree, string, strlen(string), id) == 0)
-    rb_raise(rb_eRuntimeError, "Failed to add `%s\", duplicate id `%d\"?", string, id);
+  if(ac_add_string(kwt_data->tree, StringValuePtr(v_string), (int)NUM2INT(rb_funcall(v_string, rb_intern("length"), 0)), id) == 0)
+    rb_raise(rb_eRuntimeError, "Failed to add `%s\", duplicate id `%d\"?", StringValuePtr(v_string), id);
 
   kwt_data->last_id= id + 1;
   kwt_data->dictionary_size++;
@@ -273,24 +274,23 @@ rb_kwt_new_from_file(int argc, VALUE *argv, VALUE klass)
 
   struct kwt_struct_data *kwt_data;
   char word[1024];
-  int id;
+  int id = 0;
   VALUE self;
-  VALUE f_string;
+  VALUE filename;
   FILE *dictionary;
 
-  rb_scan_args(argc, argv, "10", &f_string);
- 
-  id = 0;
-  SafeStringValue( f_string );
+  rb_scan_args(argc, argv, "10", &filename);
+  
+  SafeStringValue(filename);
   self= rb_class_new_instance( 0, NULL, klass );
   KeywordTree( self, kwt_data );
 
-  dictionary = fopen( RSTRING( f_string )->ptr, "r" );
+  dictionary= fopen( StringValuePtr(filename), "r" );
   if(dictionary == NULL)
-    rb_raise(rb_eRuntimeError, "Cannot open `%s\". No such file?", RSTRING(f_string)->ptr);
+    rb_raise(rb_eRuntimeError, "Cannot open `%s\". No such file?", StringValuePtr(filename));
 
   while(fgets(word, 1024, dictionary) != NULL) {
-    ac_add_string(kwt_data->tree, word, strlen(word)-1, id++);
+    ac_add_string(kwt_data->tree, word, (int)(strlen(word)-1), id++);
     kwt_data->dictionary_size++;
   }
 
