@@ -329,7 +329,7 @@ void Init_native() {
   rb_define_method(rb_cKeywordTree, "find_all", rb_kwt_find_all, -1);
   rb_define_alias(rb_cKeywordTree, "search", "find_all");
 
-  rb_define_singleton_method(rb_cKeywordTree, "from_file", rb_kwt_new_from_file, -1);
+  rb_define_singleton_method(rb_cKeywordTree, "_from_file", rb_kwt_new_from_file, -1);
 
   sym_id       = ID2SYM(rb_intern("id"));
   sym_value    = ID2SYM(rb_intern("value"));
