@@ -19,18 +19,22 @@ task :default do
 end
 
 desc "Runs ruby extconf.rb"
-task :extconf do
-  `cd ext && ruby extconf.rb && cd ../`
+task :extconf => :clean do
+  Dir.chdir('ext/ahocorasick') do
+    ruby "extconf.rb"
+  end
 end
 
 desc "Makes the extension"
 task :ext => :extconf do
-  `cd ext/ && make && cd ../`
+  Dir.chdir('ext/ahocorasick') do
+    sh "make"
+  end
 end
 
 desc "Cleans the workspace"
 task :clean do
-  `rm -rf ext/*.o ext/*.so ext/Makefile ext/*.bundle`
+  sh "rm -rf ext/ahocorasick/*.o ext/ahocorasick/*.so ext/ahocorasick/Makefile ext/ahocorasick/*.bundle"
 end
 
 desc "Run rspec"

@@ -1,5 +1,8 @@
-require 'ext/ahocorasick'
+%w(../lib ../ext).each do |path|
+  $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), path)))
+end
 
+require 'ahocorasick'
 include AhoCorasick
 
 describe KeywordTree do
@@ -237,20 +240,28 @@ describe KeywordTree do
 
   describe "Benchmarks. Loading from a file" do
 
+    before(:each) do
+      @start= Time.now
+    end
+
+    after(:each) do
+      @start=nil
+    end
+
     it "should be fast to load a bunch of english words" do
-      start= Time.now
       k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
-      puts "\n%d words loaded in %s seconds" % [k.size, (Time.now - start)]
-      (Time.now-start).should < 0.2
+      puts "\n%d words loaded in %s seconds" % [k.size, (Time.now - @start)]
+      (Time.now-@start).should < 0.2
     end
 
     it "should be fast to find" do
-      start= Time.now
+      # start= Time.now
       k= KeywordTree.from_file File.dirname(__FILE__) + "/data/en.words"
       load_time= Time.now
       results= k.find_all( File.read( File.dirname(__FILE__) + "/data/melville-moby_dick.txt" ) )
-      puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - start), results.size, (Time.now-load_time)]
+      puts "\n%d words re-loaded in %s seconds.\nGot %d results in %s seconds" % [k.size, (load_time - @start), results.size, (Time.now-load_time)]
       (Time.now-load_time).should < 1.3
+      puts results.last.inspect
     end
   end
 

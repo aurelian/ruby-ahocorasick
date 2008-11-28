@@ -3,6 +3,6 @@
 *.o
 *.bundle
 pkg
-ext/Makefile
+ext/ahocorasick/Makefile
 spec/data/en.words
 spec/data/melville-moby_dick.txt

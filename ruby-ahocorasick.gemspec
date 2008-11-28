@@ -1,11 +1,12 @@
 GEM_NAME= 'ruby-ahocorasick'
-GEM_VERSION= '0.4.5'
+GEM_VERSION= '0.5.0'
 
 PKG_FILES = [
-  'ext/extconf.rb',
-  'ext/ruby-ahocorasick.c',
-  'ext/ac.h',
-  'ext/ac.c',
+  'ext/ahocorasick/extconf.rb',
+  'ext/ahocorasick/ruby-ahocorasick.c',
+  'ext/ahocorasick/ac.h',
+  'ext/ahocorasick/ac.c',
+  'lib/ahocorasick.rb',
   'examples/dict.rb',
   'examples/test.rb',
   'examples/elev.rb',
@@ -26,10 +27,10 @@ GEMSPEC = Gem::Specification.new do | s |
   EOF
 
   s.files = PKG_FILES
-  s.extensions << "ext/extconf.rb"
+  s.extensions << "ext/ahocorasick/extconf.rb"
   s.has_rdoc = true
   s.rdoc_options << '--title' <<  'Ruby-AhoCorasick' << 
-    '--inline-source' << 'ext/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
+    '--inline-source' << 'ext/ahocorasick/ruby-ahocorasick.c' << 'README.textile' << '--main' << 'README.textile'
   s.author = "Aurelian Oancea"
   s.email = "oancea at gmail dot com"
   s.homepage = "http://www.locknet.ro"

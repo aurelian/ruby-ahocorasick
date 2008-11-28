@@ -314,7 +314,7 @@ rb_kwt_struct_alloc(VALUE klass)
 /*
  * Blump.
  */
-void Init_ahocorasick() {
+void Init_native() {
   rb_mAhoCorasick = rb_define_module("AhoCorasick");
   rb_cKeywordTree = rb_define_class_under(rb_mAhoCorasick, "KeywordTree", rb_cObject);
   
