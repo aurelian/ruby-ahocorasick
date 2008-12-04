@@ -57,7 +57,7 @@ $ gem install ruby-ahocorasick
 
 h4. Notes
 
-It's known to work / compile / install on Ubuntu 8.04 and Mac OS 10.4.*. It should work out of the box if you have gcc around.
+It's known to work / compile / install on Ubuntu 8.04 and Mac OS 10.4.*. It should work out of the box if you have gcc.
 Unfortunately I don't have a Windows PC around nor required knowledge about Microsoft compliers.
 
 

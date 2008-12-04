@@ -30,9 +30,7 @@ end
 
 k = KeywordTree.new
 k.filter= Bar.new
-
 puts "==> is valid? defined got #{k.filter.respond_to?("valid?")}"
-
 begin
   k.filter.valid?("ss", {:foo=>"bar"})
 rescue NotImplementedError => error
