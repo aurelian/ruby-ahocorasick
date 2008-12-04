@@ -25,6 +25,7 @@ static VALUE sym_id, sym_value, sym_ends_at, sym_starts_at;
 
 VALUE rb_mAhoCorasick;
 VALUE rb_cKeywordTree;
+VALUE rb_cResultFilter;
 
 #define KeywordTree(obj, kwt_data) {\
   Data_Get_Struct(obj, struct kwt_struct_data, kwt_data);\
@@ -37,14 +38,26 @@ struct kwt_struct_data {
   int is_frozen;
 };
 
-// int
-// rb_add_string(struct kwt_struct_data *kwt, char *word, int size, int id) {
-//   if(ac_add_string( kwt->tree, word, size, id ) == 0)
-//     return 0;
-//   kwt->dictionary_size++;
-//   kwt->last_id= id+1;
-//   return 1;
-// }
+//
+// ResultFilter interface
+//
+
+static VALUE 
+rb_rf_init(VALUE self) {
+  return self;
+}
+static VALUE
+rb_rf_valid(int argc, VALUE *argv, VALUE self) {
+  VALUE result;
+  VALUE remain;
+  rb_scan_args(argc, argv, "20", &result, &remain);
+  rb_raise(rb_eNotImpError, "Method AhoCorasick::ResultFilter.valid?(<Hash> result, <String> remain) should be implemented in child classes.");
+  return Qtrue;
+}
+
+//
+// ~ResultFilter
+//
 
 /*
  * call-seq: initialize
@@ -68,6 +81,7 @@ rb_kwt_init(VALUE self)
   kwt_data->last_id         = 1;
   kwt_data->dictionary_size = 0;
   kwt_data->is_frozen       = 0;
+  rb_iv_set( self, "@filter", Qnil );
   return self;
 }
 
@@ -135,6 +149,7 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
   int lgt, id, ends_at; // filled in by ac_search: the length of the result, the id, and starts_at/ends_at position
   VALUE v_result;  // one result, as hash
   VALUE v_results; // all the results, an array
+  VALUE filter; // filter to be applied to results
 
   VALUE v_search;  // search string, function argument
   struct kwt_struct_data *kwt_data;
@@ -160,6 +175,8 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
     return v_results;
   // prepare the search
   ac_search_init(kwt_data->tree, StringValuePtr(v_search), (int)NUM2INT(rb_funcall(v_search, rb_intern("length"), 0)));
+  // get the filter
+  filter= rb_iv_get(self, "@filter");
   // loop trought the results
   while((remain= ac_search(kwt_data->tree, &lgt, &id, &ends_at)) != NULL) {
     // this is an individual result as a hash
@@ -168,7 +185,8 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
     rb_hash_aset( v_result, sym_starts_at, INT2NUM( (long)(ends_at - lgt - 1) ) );
     rb_hash_aset( v_result, sym_ends_at,   INT2NUM( (long)(ends_at - 1) ) );
     rb_hash_aset( v_result, sym_value, rb_str_new(remain, (long)lgt) );
-    rb_ary_push( v_results, v_result );
+    if (filter == Qnil || rb_funcall( filter, rb_intern("valid?"), 2, v_result, rb_str_new(remain, (long)strlen(remain)) )!=Qfalse)
+      rb_ary_push( v_results, v_result );
   }
   // reopen the tree
   kwt_data->is_frozen= 0;
@@ -250,6 +268,32 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
   return INT2FIX(id);
 }
 
+static VALUE
+rb_kwt_set_filter(int argc, VALUE *argv, VALUE self) {
+  struct kwt_struct_data *kwt_data;
+  VALUE filter;
+
+  rb_scan_args(argc, argv, "10", &filter);
+  
+  if(rb_obj_is_kind_of(filter, rb_cResultFilter) == 0)
+    rb_raise(rb_eTypeError, "Type mismatch: required %s, %s given.", rb_class2name(rb_cResultFilter), rb_class2name(CLASS_OF(filter)));
+
+  KeywordTree( self, kwt_data );
+  rb_iv_set( self, "@filter", filter );
+
+  return filter;
+}
+
+static VALUE
+rb_kwt_get_filter(VALUE self) {
+  VALUE filter;
+  struct kwt_struct_data *kwt_data;
+  KeywordTree( self, kwt_data );
+
+  filter= rb_iv_get(self, "@filter");
+  return filter;
+}
+
 /*
  * call-seq: from_file
  *
@@ -323,6 +367,9 @@ void Init_native() {
   rb_define_method(rb_cKeywordTree, "initialize", rb_kwt_init, 0);
   rb_define_method(rb_cKeywordTree, "size", rb_kwt_size, 0);
   rb_define_method(rb_cKeywordTree, "make", rb_kwt_make, 0);
+  rb_define_method(rb_cKeywordTree, "filter=", rb_kwt_set_filter, -1);
+  rb_define_method(rb_cKeywordTree, "filter", rb_kwt_get_filter, 0);
+
   rb_define_method(rb_cKeywordTree, "add_string", rb_kwt_add_string, -1);
   rb_define_alias(rb_cKeywordTree, "<<", "add_string");
 
@@ -331,9 +378,13 @@ void Init_native() {
 
   rb_define_singleton_method(rb_cKeywordTree, "_from_file", rb_kwt_new_from_file, -1);
 
+  rb_cResultFilter = rb_define_class_under(rb_mAhoCorasick, "ResultFilter", rb_cObject);
+  rb_define_method(rb_cResultFilter, "initialize", rb_rf_init, 0);
+  rb_define_method(rb_cResultFilter, "valid?", rb_rf_valid, -1);
+
   sym_id       = ID2SYM(rb_intern("id"));
   sym_value    = ID2SYM(rb_intern("value"));
-  sym_ends_at  = ID2SYM( rb_intern("ends_at") );
-  sym_starts_at= ID2SYM( rb_intern("starts_at") );
+  sym_ends_at  = ID2SYM(rb_intern("ends_at"));
+  sym_starts_at= ID2SYM(rb_intern("starts_at"));
 }
 
