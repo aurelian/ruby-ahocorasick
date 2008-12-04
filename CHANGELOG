@@ -1,0 +1,58 @@
+Date:   Thu Dec 4 22:30:40 2008 +0100
+	* added ResultFilter implementation
+	* added a real spec for filters
+	* added a sample for filter implementation
+	* fixed examples
+	* renamed KeywordTree::from_file to _from_file.
+	* moved KeywordTree::from_file to user space, still using the native method.
+
+Date:   Fri Nov 28 18:21:52 2008 +0100
+	* 0.5 should be ready
+	* moving things around. aiming to standard layout for a Ruby ext.
+	* be FC with ruby 1.9 + force some type conversions (long2int)
+	* use only unique words.
+	* added some use cases.
+
+Date:   Wed Nov 19 15:35:41 2008 -0700
+	* released the gem 0.4.5 to rubyforge
+	* don't need to use the intermediate result, since rb_new_str will do all the magick for us => result was released twice
+	thanks to Matt for finding this & patch
+	* dear github, please rebuild my gem :)
+	* more -text- infos.
+	* added dir_config to extconf file...
+	* trying to replicate a bug when string starts with @
+	* make returns true now
+	* tree is re-opened after a search
+	* search is an alias for find_all now
+
+Date:   Sat Oct 4 19:08:05 2008 +0200
+	* fixed return value in add_string
+	* add_string returns an int
+	* added find_all as alias for search + some docs
+	* fixed spec. hope
+	* starting to document this stuff
+	* minor stuff to get around github gems
+	* okay, search will not yield anymore
+
+Date:   Mon Sep 29 23:23:03 2008 +0200
+	* removed some comments. and then to sleep
+	* moved to gemspec
+	* cleanup. done.
+	* moved some files around
+	* fixed old ``test" files (now in examples/*.rb)
+	* it should return nil on 0 results
+	* it should not build the array with results if a block was given.
+	* generate some rdoc
+	* added Rakefile
+
+
+Date:   Sun Sep 28 21:21:11 2008 +0200
+	* strange, but now works. more or less
+	* fixed wrong id assignation
+	* some benchmarks
+	* playing with ends_at position
+	* changed the error message
+	* adding a new entry into the tree after it's been frozen should raise an error + setup last_id in from_file
+	* samples
+	* initial working version
+
