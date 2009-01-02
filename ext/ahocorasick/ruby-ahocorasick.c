@@ -1,6 +1,5 @@
-
 //
-// (c) 2008, Aurelian Oancea < oancea at gmail dot com >
+// (c) 2008, 2009 Aurelian Oancea < oancea at gmail dot com >
 //
 // Released under MIT-LICENSE
 //
@@ -9,7 +8,6 @@
 // TODO: new methods?
 //
 //  * kwt[id] = word
-//  * kwt.from_file (class instance method)
 //
 //  * kwt.find_each ("str") {|r| .. }
 //  * kwt.find_first("str")
@@ -46,6 +44,7 @@ static VALUE
 rb_rf_init(VALUE self) {
   return self;
 }
+
 static VALUE
 rb_rf_valid(int argc, VALUE *argv, VALUE self) {
   VALUE result;
@@ -134,7 +133,7 @@ rb_kwt_make(VALUE self)
  *   kwt.add_string("one")
  *   kwt.add_string("two")
  *
- *   kwt.search( "moved two times already" ).each  do | result |
+ *   kwt.find_all( "moved two times already" ).each  do | result |
  *     result[:id] # => 2
  *     result[:ends_at] # => 9
  *     result[:starts_at] # => 6
