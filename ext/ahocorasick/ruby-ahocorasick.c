@@ -11,7 +11,6 @@
 //
 //  * kwt.find_each ("str") {|r| .. }
 //  * kwt.find_first("str")
-//  * kwt.find_all  ("str")
 //
 // TODO: change last_id and dictionary_size to long
 //
@@ -40,11 +39,21 @@ struct kwt_struct_data {
 // ResultFilter interface
 //
 
+/*
+ * call-seq: initialize
+ *
+ * Does nothing.
+ */ 
 static VALUE 
 rb_rf_init(VALUE self) {
   return self;
 }
 
+/*
+ * call-seq: valid?(result, string)
+ *
+ * Only defines the signature for this method.
+ */ 
 static VALUE
 rb_rf_valid(int argc, VALUE *argv, VALUE self) {
   VALUE result;
@@ -85,7 +94,6 @@ rb_kwt_init(VALUE self)
 }
 
 /*
- * Document-method: make
  * call-seq: make
  *
  * It freezes the current KeywordTree.
@@ -118,16 +126,15 @@ rb_kwt_make(VALUE self)
 }
 
 /*
- * Document-method: find_all
- * call-seq: find_all
+ * call-seq: find_all(string)
  *
  * Search the current tree.
  *
  * It returns an array on hashes, e.g.
  *
- *   [ { :id => int, :value => int, :starts_at => int, :ends_at => int}, { ... } ]
+ *   [ { :id => int, :value => string, :starts_at => int, :ends_at => int}, { ... } ]
  * 
- * Returns an empty array when the search didn't return any result.
+ * Or an empty array if it did not find anything.
  *
  *   # assuming a valid KeywordTree kwt object:
  *   kwt.add_string("one")
@@ -193,7 +200,6 @@ rb_kwt_find_all(int argc, VALUE *argv, VALUE self)
 }
 
 /*
- * Document-method: size
  * call-seq: size
  *
  * Returns the size of this KeywordTree
@@ -213,8 +219,7 @@ rb_kwt_size(VALUE self)
 }
 
 /*
- * Document-method: add_string
- * call-seq: add_string
+ * call-seq: add_string(string, id= nil)
  *
  * Adds a sequence to this KeywordTree.
  *
@@ -238,13 +243,11 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
 { 
   VALUE v_string, v_id;
   struct kwt_struct_data *kwt_data;
-  // char * string;
   int id;
 
   rb_scan_args(argc, argv, "11", &v_string, &v_id);
  
   Check_Type(v_string, T_STRING);
-  // string= StringValuePtr(v_string);
   KeywordTree(self, kwt_data);
 
   if(kwt_data->is_frozen == 1)
@@ -267,6 +270,14 @@ rb_kwt_add_string(int argc, VALUE *argv, VALUE self)
   return INT2FIX(id);
 }
 
+/*
+ * call-seq: filter=(AhoCorasick::ResultFilter)
+ *
+ * Attach a <tt>filter</tt> to this KeywordTree.
+ *
+ * A <tt>filter</tt> should extend AhoCorasick::ResultFilter and implement <tt>valid?</tt> method.
+ *
+ */
 static VALUE
 rb_kwt_set_filter(int argc, VALUE *argv, VALUE self) {
   struct kwt_struct_data *kwt_data;
@@ -283,6 +294,12 @@ rb_kwt_set_filter(int argc, VALUE *argv, VALUE self) {
   return filter;
 }
 
+/*
+ * call-seq: filter
+ *
+ * It gets the <tt>filter</tt>. D'oh.
+ *
+ */
 static VALUE
 rb_kwt_get_filter(VALUE self) {
   VALUE filter;
@@ -294,17 +311,9 @@ rb_kwt_get_filter(VALUE self) {
 }
 
 /*
- * call-seq: from_file
+ * call-seq: _from_file
  *
- * Creates a new KeywordTree and loads the dictionary from a file
- * 
- *    % cat dict0.txt
- *    foo
- *    bar
- *    base
- *     
- *    k= AhoCorasick::KeywordTree.from_file "dict0.txt"
- *    k.search("basement").size # => 1
+ * ==== Note: It's not safe to use this method, but rather from_file.
  *
  */
 static VALUE
